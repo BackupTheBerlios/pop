@@ -99,8 +99,11 @@ begin
   if page2 = nil then
    page2 := create_video_bitmap(BILDSCHIRMX,BILDSCHIRMY);
  end else begin
-  page1 := screen;
-  page2 := screen;
+  {ansonsten Bilder im Speicher aufbauen}
+  if page1 = nil then begin
+   page1 := create_bitmap(BILDSCHIRMX, BILDSCHIRMY);
+   apage := page1;
+  end;
  end;
  if apage = nil then
   apage:=page2;
@@ -114,6 +117,7 @@ end;
 procedure flip_page;
 begin
  if not nopageflip then begin
+  {Page Flipping}
   if show_video_bitmap(apage) < 0 then
    if page1<>screen then
     fehler ('Fehler beim Seitenwechseln!');
@@ -122,6 +126,9 @@ begin
    apage:=page2
   else
    apage:=page1;
+ end else begin
+  {kein Page Flipping}
+  blit(apage,screen,0,0,0,0,BILDSCHIRMX,BILDSCHIRMY);
  end;
 end;
 
