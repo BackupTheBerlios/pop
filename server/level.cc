@@ -38,7 +38,7 @@ int level::load(const char *file)
 
  if (!is->good())
   return -1;
- is->get((char *)this, sizeof(level));
+ is->read((char *)this, sizeof(level));
 
  if (!is->good()) {
   is->close();
