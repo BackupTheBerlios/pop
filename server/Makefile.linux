@@ -1,5 +1,8 @@
+PFAD_POP = ../data/
 GOAL = popserver
 LIBS = 
 ADDCFLAGS =
+DEFS = -DLINUX -DPFAD_POP='"$(PFAD_POP)"'
+ADDOBJECTS = sched_linux.o
 
 include Makefile.common

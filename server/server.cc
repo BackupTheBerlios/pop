@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <time.h>
+#include <getopt.h>
 
 #include "server.h"
 #include "schedule.h"
