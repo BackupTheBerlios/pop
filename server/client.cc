@@ -32,6 +32,7 @@ client::client()
  stat2=0;
  master=false;
  ok=false;
+ accepted=false;
 
  obj=NULL;
  a=NULL;

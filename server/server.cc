@@ -322,7 +322,7 @@ void pops_acceptclient (client &s)
 
  clients::iterator i;
  for (i=clist.begin();i!=clist.end();i++) {
-  if (i->geta() != s.geta()) {
+  if ((i->geta() != s.geta()) && i->isacpt()) {
    serv_sendmsgs (sc,s.geta(),G_SETUP,7, i->getnum(), i->getname());
    serv_sendmsg (sc,s.geta(), G_SETUP,8, i->getnum(), i->obj->gettyp());
   }

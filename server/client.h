@@ -93,6 +93,8 @@ class client
   void sendmsg(int num,const char *msg);
   s_client *geta()	{ return a; }
   void seta(s_client *ad) { a=ad; }
+  void setacpt() { accepted=true; }
+  bool isacpt() { return accepted; }
 
   //s_client *a;
   // Oh shit, why must everything be depent on something other?
@@ -105,6 +107,7 @@ class client
   char name[255];
   int cstatus;
   int stat2;
+  bool accepted;
   bool master;
   bool ok;
 };
