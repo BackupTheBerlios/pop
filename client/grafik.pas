@@ -278,8 +278,8 @@ begin
    yp:=dyndata[i].yp-position.y-(zuschauer.gfx^.h div 2);
    rotate_sprite (apage,zuschauer.gfx,xp,yp,dyndata[i].richtung);
   end else if players[i].typ=1 then begin	{Spieler}
-   xp:=dyndata[i].xp-position.x-(zuschauer.gfx^.w div 2);
-   yp:=dyndata[i].yp-position.y-(zuschauer.gfx^.h div 2);
+   xp:=dyndata[i].xp-position.x-(players[i].gfx^.w div 2);
+   yp:=dyndata[i].yp-position.y-(players[i].gfx^.h div 2);
    rotate_sprite (apage,players[i].gfx,xp,yp,dyndata[i].richtung);
   end;
  end;
