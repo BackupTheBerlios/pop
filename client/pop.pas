@@ -47,7 +47,7 @@ begin
  if set_gfx_mode(GFX_AUTODETECT, 640, 480, 0, 480*2) < 0 then begin
   if set_gfx_mode(GFX_AUTODETECT,640,480,0,0) < 0 then
    fehler ('Fehler beim setzen des Grafikmodus (640x480x16Bit)');
-  i:=alert ('Achtung!','Ihre Grafikkarte unterstützt kein Page Flipping',
+  i:=alert ('Achtung!','Ihre Grafikkarte unterstuetzt kein Page Flipping',
 	'Die Grafik koennte Flimmern und Flackern!','OK',nil,KEY_ENTER,0);
   nopageflip:=true;
  end else begin
