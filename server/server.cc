@@ -187,6 +187,14 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
   }
  }
 
+ if (status==STATUS_RUN) {
+  switch (n) {
+   case 80:	//Infos angefordert
+	//kommt noch
+	break;
+  }
+ }
+
  // Tastatur eingaben
  if (g==G_CONTROL) {
   ac->contr (a2,a1);

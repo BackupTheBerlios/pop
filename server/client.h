@@ -51,6 +51,8 @@ class game_objekt
   virtual void setpos(unsigned short x,unsigned short y);
   virtual void setrot(fix r);
   void sendmsg(int num,const char *msg);
+  // FixME: Buffer overflows
+  virtual void getstatus(char *msg);
 };
 
 class zuschauer : public game_objekt
@@ -80,6 +82,7 @@ public:
   void contr(int num,int a);
   virtual void setpos(unsigned short x,unsigned short y);
   virtual void setrot(fix r);
+  void getstatus(char *msg);
 };
 
 class client

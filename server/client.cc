@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <stdio.h>
 #include <iostream.h>
 #include <string.h>
 #include <math.h>
@@ -199,6 +200,11 @@ void game_objekt::sendmsg(int num,const char *msg)
  cl->sendmsg(num,msg);
 }
 
+void game_objekt::getstatus(char *msg)
+{
+	strcpy (msg,"");
+}
+
 spieler::spieler(client *c)
  : game_objekt (c)
 {
@@ -303,6 +309,11 @@ void spieler::calc()
  dyn.xp = (short unsigned int) px;
  dyn.yp = (short unsigned int) py;
  dyn.richtung = richtung * (128/M_PI);
+}
+
+void spieler::getstatus(char *msg)
+{
+	sprintf (msg,"%s - Runde %d",cl->getname(),round);
 }
 
 void spieler::contr(int num,int a1)
