@@ -1,0 +1,27 @@
+# Autobeschreibungsdatei
+#
+# Bem: Die Breite und Höhe bezieht sich auf eine Auflösung von 640x480 
+SetName "Pandas"
+
+Auto
+ Name "Panda rot"
+ Breite 20,40
+ GfxName "panda.pcx"
+ Reifen 5
+ PS 10
+End
+
+Auto
+ Name "Panda 2"
+ Breite 70,150
+ GfxName "panda2.pcx"
+ Reifen 6
+ PS 15
+End
+
+Auto
+ Name "Zuschauer"
+ Breite 30,80
+ GfxName "zuschauer.pcx"
+ Flags 1
+End
