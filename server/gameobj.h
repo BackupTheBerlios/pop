@@ -54,7 +54,7 @@ public:
   autodaten *car;
   float f,v;
   float px,py,richtung;
-  float nx,ny;
+  float nx,ny,nrichtung;
   float drehung;
   int acp;
   int round;
@@ -65,13 +65,15 @@ public:
 
   void calcpos();
   void calccoll(const vector<game_objekt *> objs);
-  void setnpos();
   void contr(int num,int a);
   virtual void setpos(unsigned short x,unsigned short y);
   virtual void setrot(fix r);
   void getstatus(char *msg);
-  void inline checkstoss();
   int gettyp()	{ return TYPE_SPIELER; }
+protected:
+  void setnpos();
+  int inline checkstoss(float,float,float,float);
+  void getcorners(float,float,float,float[4],float[4]);
 };
 
 #endif

@@ -1,5 +1,6 @@
 // gameobj.cc
 
+#include <unistd.h>
 #include <stdio.h>
 #include <math.h>
 
@@ -64,11 +65,12 @@ spieler::spieler()
  car=NULL;
  v=f=0;
  px=py=richtung=0;
- nx=ny=0;
+ nx=ny=nrichtung=0;
  drehung=0;
  acp=0;
  round=0;
  fertig=false;
+ car = autotypen::gettyp(0);
 }
 
 void spieler::setcar(int num)
@@ -99,9 +101,9 @@ extern int starttime; // Hack
 #define kkonst	0.8
 #define DKONST	0.2
 
-void inline spieler::checkstoss()
+int inline spieler::checkstoss(float xp,float yp,float xn,float yn)
 {
- int s= al.stoss(px,py,nx,ny);
+ int s= al.stoss(xp,yp,xn,yn);
 
  // Rundenzählen
  if (s>=2) {
@@ -130,18 +132,19 @@ void inline spieler::checkstoss()
 	} else {
 		cout << "Fehlerhaftes Leveldesign!!!\n";
 	}
+	return 1;
  }
 
  // Stoss beachten?
  if (s==1) {
   // angestoßen
   v=-(v/2);
-  px += sin(richtung) *v;
-  py -= cos(richtung) *v;
- } else {
-  px=nx;
-  py=ny;
+  nx = px + (3/2) * sin(richtung) *v;
+  ny = py - (3/2) * cos(richtung) *v;
+  return 1;
  }
+
+ return 0;
 }
 
 void inline spieler::calcpos()
@@ -149,7 +152,8 @@ void inline spieler::calcpos()
  if (starttime<=0) { // Rennen schon gestartet
 
  if (fertig) {
-        // Alle Runden beendet => abbremsen
+	cout << "Fertig!\n";
+      // Alle Runden beendet => abbremsen
 	v-=0.125;
 	if (v<0) v=0;
  } else {
@@ -167,9 +171,12 @@ void inline spieler::calcpos()
   }
  }
 
- richtung += drehung * (M_PI/180); // 5 Grad Schritte...
- nx=px+sin(richtung)*v;
- ny=py-cos(richtung)*v;
+ richtung = nrichtung;
+ px=nx;
+ py=ny;
+ nrichtung +=  drehung * (M_PI/180); // 5 Grad Schritte...
+ nx += sin(nrichtung)*v;
+ ny -= cos(nrichtung)*v;
 
  if (nx<0) nx=0;
  if (nx>al.b * 640) nx=al.b*640;
@@ -182,14 +189,49 @@ void inline spieler::calcpos()
 
 void spieler::setnpos()
 {
- dyn.xp = (unsigned short int) px;
- dyn.yp = (unsigned short int) py;
- dyn.richtung = richtung * (128/M_PI);
+ dyn.xp = (unsigned short int) nx;
+ dyn.yp = (unsigned short int) ny;
+ dyn.richtung = nrichtung * (128/M_PI);
+}
+
+void spieler::getcorners(float xp,float yp,float winkel,float x[4],float y[4])
+{
+	//normale Ecken
+	x[0]=xp-(car->b/2);
+	y[0]=yp-(car->h/2);
+	x[1]=xp+(car->b/2);
+	y[1]=yp-(car->h/2);
+	x[2]=xp-(car->b/2);
+	y[2]=yp+(car->h/2);
+	x[3]=xp+(car->b/2);
+	y[3]=yp+(car->h/2);
+
+	//rotieren (hmm, could use this gnu addition, with sin+cos with 1 function
+	// but this doesn't exist in cygwin...
+	float cosw=cos(winkel);
+	float sinw=sin(winkel);
+	for (int i=0;i<4;i++) {
+		x[i]-=xp; y[i]-=yp;
+		float xt=x[i];
+		x[i]=x[i]*cosw-y[i]*sinw;
+		y[i]=xt*sinw+y[i]*cosw;
+		x[i]+=xp; y[i]+=yp;
+	}
 }
 
 void spieler::calccoll(const vector <game_objekt *> objs)
 {
-	checkstoss();
+	// 4 Ecken berechnen
+	float xb[4],yb[4];
+	float xn[4],yn[4];
+
+	getcorners(px,py,richtung,xb,yb);
+	getcorners(nx,ny,nrichtung,xn,yn);
+	for (int i=0;i<4;i++) {
+		if (checkstoss(xb[i],yb[i],xn[i],yn[i]))
+			break;
+	}
+
 	setnpos();
 }
 

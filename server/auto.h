@@ -17,9 +17,6 @@
 #ifndef __AUTO_H__
 #define __AUTO_H__
 
-#include <fstream.h>
-
-#include "fixed.h"
 #include "config.h"
 #include "autos.h"
 

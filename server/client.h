@@ -21,6 +21,7 @@
 #include <vector>
 
 #include <stdio.h>
+#include "fixed.h"
 #include "message.h"
 #include "level.h"
 #include "auto.h"

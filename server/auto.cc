@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 #include <malloc.h>
-#include <iostream.h>
-#include <fstream.h>
 #include "auto.h"
 #include "autos.h"
 
