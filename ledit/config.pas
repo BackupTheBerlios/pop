@@ -13,7 +13,9 @@ interface
  *************}
 
 const
- PFAD_POP = '/mnt/PlatteC/progr/pascal/pop/data/';
+ {$ifndef PFAD_POP} 
+ PFAD_POP = '../data/';
+ {$endif}
  PFAD_ENDE = PFAD_POP + 'grafik/ende/';
  PFAD_LEVEL = PFAD_POP + 'level/';
  PFAD_LEVELGFX = PFAD_POP + 'grafik/strecke/';

@@ -15,10 +15,13 @@ var
  aktp : BITMAP_ptr;
  ateil : integer;
  bary : integer;
+ cpnum : integer;
 
 procedure show_level;
 var
  x,y : integer;
+ i : integer;
+ t : string(10);
 begin
  {Bereich füllen}
  rectfill (aktp,0,0,grx - RANDX - STRTEILGRX - RANDX,gry,makecol(190,190,190));
@@ -30,6 +33,13 @@ begin
    if ((y-ay) < anzy) and ((x-ax) < anzx) and (x < l.b) and (y < l.h ) then
     blit (s.t[ l.l[x,y] ].gfx,aktp, 0,0 , RANDX + (x-ax)* STRTEILGRX,
           	RANDY + (y-ay) * STRTEILGRY, STRTEILGRX, STRTEILGRY);
+    for i:=0 to 5 do begin
+	if ((x>0) or (y>0)) and ((l.cpoints[i].x=x) and (l.cpoints[i].y=y)) then begin
+		t := Integer2String (i+1);
+		textout (aktp,font,t,RANDX + (x-ax) * STRTEILGRX, 
+			RANDY + (y-ay) * STRTEILGRY,makecol(255,0,0));
+      end;
+    end; 
   end;
  end;
 end;
@@ -65,16 +75,35 @@ end;
 procedure mouse_calc;
 var
  x,y : integer;
+ yt : integer;
 begin
  {Im Zeichenbereich?}
  if (mouse_x^ > RANDX) and (mouse_x^ < grx - RANDX - STRTEILGRX - RANDX) then begin
   x := (mouse_x^ - RANDX) div STRTEILGRX + ax;
   y := (mouse_y^ - RANDY) div STRTEILGRY + ay;
 
+
   if (x>=0) and (x<l.b) and (y>=0) and (y<l.h) then begin
-   l.l[x,y]:=ateil;
-   show_level;
-   flip;
+   if cpnum>=0 then begin
+	while mouse_b^ <> 0 do write ('');
+	if s.t[l.l[x,y]].flags > 0 then begin
+		for yt:=0 to 5 do begin
+			if (l.cpoints[yt].x=x) and (l.cpoints[yt].y=y) then begin
+				l.cpoints[yt].x:=0;
+				l.cpoints[yt].y:=0;
+			end;
+		end;		
+		l.cpoints[cpnum].x:=x;
+		l.cpoints[cpnum].y:=y;
+		show_level;
+		flip;
+	end;
+	cpnum:=-1;
+   end else begin	
+	   l.l[x,y]:=ateil;
+	   show_level;
+	   flip;
+   end;
   end;
  end;
 
@@ -176,29 +205,23 @@ begin
  anzx := anzx div STRTEILGRX;
  anzy := anzy div STRTEILGRY;
 
- writeln ('Levelteile');
-
  if level_strload (@s,PFAD_LEVELGFX) < 0 then begin
   allegro_exit;
   writeln ('Achtung! Fehler beim lesen der Levelteile!');
   halt(1);
  end;
 
- writeln ('Teile OK');
  clear_to_color (aktp,makecol(125,125,125));
 
  bary := 0;
  ateil := 0;
  ax:=0;
  ay:=0;
-writeln ('Show Level');
+ cpnum:=-1;
 
  show_level;
- writeln ('Show1');
  show_bar;
- writeln ('Flip');
  flip;
- writeln ('Main Loop');
 
  show_mouse(screen);
  while key^[KEY_ESC] = 0 do begin
@@ -251,6 +274,10 @@ writeln ('Show Level');
      bary := bary - 1;
      show_bar;
      flip;
+    end;
+   KEY_1..KEY_6: begin
+    writeln ('NUM');
+    cpnum:=sc-KEY_1;
     end;
    end; {case}
   end; {if keypressed}

@@ -56,10 +56,14 @@ type
  {Datentyp für Streckenteil}
  strtyp = byte;
 
+ pos = record
+    x, y : ShortCard;
+ end;
+
  {Array mehrerer Streckenteile -> ein Level! }
  level = record
-    startx, starty : integer; {Startpunkt X und Y}
     b,h : integer; {Breite + Hoehe des Levels}
+    cpoints : array [0..5] of pos;
     reserver : array [0..20] of integer; {Für zukünftige Erweiterungen}
     l : array [0..LEVELMAXX-1,0..LEVELMAXY-1] of strtyp;
     end;
