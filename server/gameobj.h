@@ -25,7 +25,7 @@ class game_objekt
   int xp();
   int yp();
   virtual void calcpos();
-  virtual void calccoll(const vector<game_objekt *> objs);
+  virtual void calccoll(vector<game_objekt *> *objs);
   virtual void contr(int num,int a);
   virtual void setpos(unsigned short x,unsigned short y);
   virtual void setrot(fix r);
@@ -64,7 +64,7 @@ public:
   void setcar(int num);
 
   void calcpos();
-  void calccoll(const vector<game_objekt *> objs);
+  void calccoll(vector<game_objekt *> *objs);
   void contr(int num,int a);
   virtual void setpos(unsigned short x,unsigned short y);
   virtual void setrot(fix r);

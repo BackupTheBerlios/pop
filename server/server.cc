@@ -127,6 +127,7 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
 		break;
 	case TYPE_SPIELER:
 		to=new spieler;
+		printf ("ObjAdr:%p\n",to);
 		clist.setobj(ac,to);
 		break;
 	default:

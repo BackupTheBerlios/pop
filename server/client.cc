@@ -179,7 +179,7 @@ void clients::calc()
 
 	// Schritt 2:
 	for (i=begino();i!=endo();i++) {
-		(*i)->calccoll(obj);
+		(*i)->calccoll(&obj);
 	}
 }
 

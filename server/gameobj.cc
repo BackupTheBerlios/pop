@@ -8,6 +8,8 @@
 #include "gameobj.h"
 // Shit should remove this, but need some few global vars
 #include "server.h"
+#define   RELATIV 5
+#include "collcode.cc"
 
 game_objekt::game_objekt()
 {
@@ -31,7 +33,7 @@ void game_objekt::calcpos()
 {
 }
 
-void game_objekt::calccoll(const vector<game_objekt *>)
+void game_objekt::calccoll(vector<game_objekt *> *)
 {
 }
 
@@ -80,7 +82,7 @@ void spieler::setcar(int num)
 
 void spieler::setpos(unsigned short x,unsigned short y)
 {
- px=x;py=y;
+ nx=x;ny=y;
 }
 
 void spieler::setrot(fix r)
@@ -183,8 +185,6 @@ void inline spieler::calcpos()
  if (nx>al.b * 640) nx=al.b*640;
  if (ny<0) ny=0;
  if (ny>al.h * 480) ny=al.h*480;
- } else {
-  nx=px; ny=py;
  }
 }
 
@@ -220,14 +220,42 @@ void spieler::getcorners(float xp,float yp,float winkel,float x[4],float y[4])
 	}
 }
 
-void spieler::calccoll(const vector <game_objekt *> objs)
+void spieler::calccoll(vector <game_objekt *> *objs)
 {
 	// 4 Ecken berechnen
 	float xb[4],yb[4];
 	float xn[4],yn[4];
 
+	// andere Autos (erster dirty Hack...)
 	getcorners(px,py,richtung,xb,yb);
 	getcorners(nx,ny,nrichtung,xn,yn);
+	vector<game_objekt *>::iterator i;
+	for (i=objs->begin();i!=objs->end();i++) {
+		if ((*i)->gettyp()==TYPE_SPIELER) {
+			spieler *s=(spieler *)*i;
+			if (s==this) continue;
+			float sxn[4],syn[4];
+			getcorners(s->nx,s->ny,s->nrichtung,sxn,syn);
+			for (int i1=0;i1<4;i1++) {
+				for (int i2=0;i2<4;i2++) {
+					int s1=getsitel(sxn[i2],syn[i2],sxn[(i2+1)%4],syn[(i2+1)%4],xb[i1],yb[i1]);
+					int s2=getsitel(sxn[i2],syn[i2],sxn[(i2+1)%4],syn[(i2+1)%4],xn[i1],yn[i1]);
+					if (s1!=s2 && s1!=0 && s2!=0) {
+						float t=v;
+						v=s->v;
+						s->v=t;
+						calcpos();
+						s->calcpos();
+						//Schleifen abbrechen
+						goto schlend;
+					}
+				}
+			}
+		}	
+	}
+	schlend:
+
+	// Streckenränder
 	for (int i=0;i<4;i++) {
 		if (checkstoss(xb[i],yb[i],xn[i],yn[i]))
 			break;
