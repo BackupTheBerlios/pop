@@ -1,0 +1,8 @@
+Planet Of Panda
+
+If you want to compile this package yourself, you should take care that you've got the newest packages of:
+
+	-gpc 	The Gnu Pascal Compiler, get latest alpha, otherwise nothing will work.
+	-Allegro	You need a WIP version newer than 3.9.34
+
+Also I couldn't setup nice autoconf or automake things because we're using pascal. Also the makefile for cygwin is more or less a hack, because there were several problems with dllimport and gpc alpha.
