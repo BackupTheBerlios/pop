@@ -18,6 +18,8 @@ netclient_exit;
 remove_sound;
 writeln (s);
 writeln;
+writeln ('Informationen:');
+writeln ('Dateien werden gesucht unter: ',PFAD_POP);
 writeln ('Schade, Schade, Schade, überprüfen sie bitte ihr System:');
 writeln ('  Sie benötigen mindestens:');
 writeln (' -Einen Prozessor mit 166Mhz');
