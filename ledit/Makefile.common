@@ -1,0 +1,38 @@
+# Makefile...
+
+OBJECTS = allunit.o ledit.o parser.o strteile.o leveldat.o config.o allegc.o
+COMMON = strteile.c strteile.h parser.c parser.h allunit.pas allegc.c leveldat.pas
+
+CFLAGS = -Wall -O2 -I. $(DEBUGFLAGS) $(DEFS) $(ADDCFLAGS)
+PASFLAGS = --automake -Wall -O2 -I. $(DEBUGFLAGS) $(DEFS) $(ADDCFLAGS)
+
+.PHONY: clean
+
+all: copycommon $(GOAL)
+
+$(GOAL): $(OBJECTS)
+	gpc $(DEBUGFLAGS) -o $(GOAL) $(OBJECTS) $(LIBS)
+
+copycommon:
+	for i in $(COMMON); do \
+		cp -pu ../common/$$i $$i; \
+	done
+
+#Make kennt keine eingebaute Regel fuer Gnu Pascal...
+ledit.o : ledit.pas
+	gpc -c $(PASFLAGS) --gpc-main="_mangled_main" -o $*.o $<
+
+%.o : %.pas ;
+	gpc -c $(PASFLAGS) -o $*.o $<
+
+.c.o:
+	gcc -c $(CFLAGS) -o $*.o $<
+
+clean: removefiles copycommon
+
+removefiles:
+	-rm *.gpi
+	-rm gpc.*
+	-rm $(OBJECTS)
+	-rm $(COMMON)
+	-rm $(GOAL)
