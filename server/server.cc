@@ -465,13 +465,6 @@ void pops_send()
 
  for (cptr i=clients.begin();i!=clients.end();i++) {
   i->send(tbuf);
-  if (i->getobjtyp()==1) { // Spieler
-	spieler *s=(spieler *) i->obj;
-	if (s->msg) {
-		serv_sendmsgs(sc,i->a,G_SETUP,20,s->msg,"");
-		s->msg=0;
-	}
-  }
   tbuf++;
  }
  serv_sendmsgd_all (sc,G_PHYSIK,0,(void*)outbuf,sizeof(objdyn)*clients.size());

@@ -35,18 +35,22 @@ typedef struct {
   fix richtung;
 } objdyn;
 
+class client;
+
 class game_objekt
 {
  public:
   objdyn dyn;
+  client *cl;
 
-      game_objekt();
+      game_objekt(client *c);
   int xp();
   int yp();
   virtual void calc();
   virtual void contr(int num,int a);
   virtual void setpos(unsigned short x,unsigned short y);
   virtual void setrot(fix r);
+  void sendmsg(int num,const char *msg);
 };
 
 class zuschauer : public game_objekt
@@ -54,7 +58,7 @@ class zuschauer : public game_objekt
  public:
   float fx,fy;
 
-       zuschauer();
+       zuschauer(client *c);
   void calc();
   void contr(int num,int a);
 };
@@ -66,9 +70,10 @@ public:
   float f,v;
   float px,py,richtung;
   float drehung;
-  int msg;
+  int acp;
+  int round;
 
-       spieler();
+       spieler(client *c);
   void setcar(int num);
 
   void calc();
@@ -104,6 +109,7 @@ class client
   bool ismaster();
   void setok(bool o);
   bool isok();
+  void sendmsg(int num,const char *msg);
 
   game_objekt *obj;
   s_client *a;

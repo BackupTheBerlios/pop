@@ -58,9 +58,9 @@ void client::initobj (int typ)
   delete obj;
  }
  if (typ==0)
-  obj=(game_objekt *) new zuschauer;
+  obj=(game_objekt *) new zuschauer(this);
  if (typ==1)
-  obj=(game_objekt *) new spieler;
+  obj=(game_objekt *) new spieler(this);
  objtyp=typ+1;
 }
 
@@ -162,11 +162,17 @@ void client::send (objdyn *datao)
   cout << "Achtung! Kein Objekt gesetzt!!! Das sollte NIE passieren!\n";
 }
 
-game_objekt::game_objekt()
+void client::sendmsg(int num,const char *msg)
+{
+ serv_sendmsgs (sc,a,G_SETUP,20,num,msg);
+}
+
+game_objekt::game_objekt(client *c)
 {
  dyn.xp=0;
  dyn.yp=0;
  dyn.richtung=0;
+ cl=c;
 }
 
 void game_objekt::calc()
@@ -188,11 +194,18 @@ void game_objekt::setrot(fix r)
  dyn.richtung=r;
 }
 
-spieler::spieler()
+void game_objekt::sendmsg(int num,const char *msg)
+{
+ cl->sendmsg(num,msg);
+}
+
+spieler::spieler(client *c)
+ : game_objekt (c)
 {
  v=f=0;
  px=py=richtung=0;
- msg=0;
+ acp=0;
+ round=0;
 }
 
 void spieler::setcar(int num)
@@ -250,9 +263,26 @@ void spieler::calc()
 
  int s= al.stoss(px,py,nx,ny);
 
- if (s==2) {
-	//Checkpoint ankündigen...	
-	msg=20;
+ if (s>=2) {
+	cout << "CP! Num:" << s << "\n";
+	if (s-2==acp) {
+		acp++;
+		if (acp==6) {
+			round++;
+			cout << "Runde " << round << " beendet!\n";
+			acp=0;
+		}
+		sendmsg(20,"");	// Checkpoint
+	} else if (s-2==(acp+5)%6) {
+		if (acp==0) {
+			cout << "Runde weniger!\n";
+			round--;
+		}
+		acp=(acp+5)%6;
+		sendmsg(21,"");	// Wrong way
+	} else {
+		cout << "Fehlerhaftes Leveldesign!!!\n";
+	}
  }
  if (s==1) {
   // angestoßen
@@ -309,7 +339,8 @@ void spieler::contr(int num,int a1)
  }
 }
 
-zuschauer::zuschauer()
+zuschauer::zuschauer(client *c)
+ : game_objekt (c)
 {
  fx=0;
  fy=0;

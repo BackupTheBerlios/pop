@@ -269,7 +269,11 @@ int level::stoss(float ox,float oy,float nx,float ny)
    s2=getsitel(g->x1,g->y1,g->x2,g->y2,nx,ny);
    if (s1!=s2 && s1!=0 && s2!=0) {
     if (i==0 && (t->flags & 3)) {
-	return 2;
+	//Checkpoint?
+	for (int a=0;a<6;a++) {
+		if (cpoints[a].x==xk && cpoints[a].y==yk)
+			return 2+a;
+	}
     }
     return 1;
    }
