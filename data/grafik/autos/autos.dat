@@ -20,6 +20,32 @@ Auto
 End
 
 Auto
+ Name "Panda 3"
+ Breite 20,40
+ GfxName "panda3.pcx"
+ Reifen 6
+ PS 233
+End
+
+Auto 
+ Name "Panda 4"
+ Breite 20,40
+ GfxName "panda4.pcx"
+End
+
+Auto
+ Name "Pand 5
+ Breite 20,40
+ GfxName "panda5.pcx"
+End
+
+Auto
+ Name "Panda 6"
+ Breite 20,40
+ GfxName "panda6.pcx"
+End
+
+Auto
  Name "Zuschauer"
  Breite 30,80
  GfxName "zuschauer.pcx"
