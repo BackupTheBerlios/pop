@@ -4,6 +4,7 @@ LIBS = -lmingw32 -lmsvcrt -lalleg -lgpc
 DEFS = -DCYGWIN -DPFAD_POP='"$(PFAD_POP)"'
 ADDCFLAGS = -I /usr/include/mingw
 ADDPFLAGS = 
+DEBUGFLAGS = -g
 
 include Makefile.common
 

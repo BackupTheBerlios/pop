@@ -6,10 +6,11 @@ OBJECTS = allunit.o auto.o config.o eing.o ende.o fehler.o grafik.o gvars.o \
 	  allegc.o strteile.o autos.o music.o
 
 COMMON = autos.h autos.c strteile.c messnet.c fixed.c fixed.h message.h \
-	parser.h parser.c sysconf.h strteile.h
+	parser.h parser.c sysconf.h strteile.h allunit.pas allegc.c \
+	leveldat.pas
 
-CFLAGS = -Wall -O2 -g $(DEFS) $(ADDCFLAGS)
-PASFLAGS = --automake -Wall -O2 -g $(DEFS) $(ADDPFLAGS)
+CFLAGS = -Wall -O2 $(DEBUGFLAGS) $(DEFS) $(ADDCFLAGS)
+PASFLAGS = --automake -Wall -O2 $(DEBUGFLAGS) $(DEFS) $(ADDPFLAGS)
 
 .PHONY: clean
 
