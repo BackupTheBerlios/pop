@@ -1,5 +1,7 @@
 // netdebug.c
 
+#include <stdlib.h>
+#include <string.h>
 #include <malloc.h>
 #include <ctype.h>
 #include <fcntl.h>

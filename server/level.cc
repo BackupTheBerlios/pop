@@ -38,7 +38,7 @@ int level::load(const char *file)
 
  if (!is->good())
   return -1;
- is->read(this, sizeof(level));
+ is->get((char *)this, sizeof(level));
 
  if (!is->good()) {
   is->close();
@@ -77,7 +77,7 @@ int level::save(const char *file)
  if (!os->good())
   return -1;
 
- os->write(this, sizeof(level));
+ os->write((char *)this, sizeof(level));
 
  if (!os->good()) {
   os->close();

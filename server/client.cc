@@ -20,6 +20,8 @@
 #include <string.h>
 #include <math.h>
 
+using namespace std;
+
 #include "server.h"
 #include "client.h"
 
@@ -131,7 +133,7 @@ client *clients::findclient(s_client *adr)
 	if (i==clist.end())
 		return NULL;
 
-	return i;
+	return (client *) &(*i);
 }
 
 client *clients::findclient(int i)
@@ -146,21 +148,24 @@ client *clients::makenew(s_client *adr)
 	clist.push_back(*tc);
 	obj.resize(clist.size());
 	delete tc;
-	tc=(clist.end()-1);
+	tc=&(*(clist.end()-1));
 	tc->seta(adr);
-	return (clist.end()-1);
+	return &(*(clist.end()-1));
 }
 
 void clients::delclient(s_client *adr)
 {
-	unsigned int i;
+	vector <client>::iterator i;
+	vector <game_objekt *>::iterator o;
 
-	for (i=0;i<clist.size();i++) {
-		if (clist[i].geta()==adr) {
-			clist.erase( &(clist[i]) );
-			obj.erase( &(obj[i]) );
-			break;	// Hmm, should search for others...
+	o=obj.begin();
+	for (i=clist.begin();i!=clist.end();i++) {
+		if (i->geta()==adr) {
+			clist.erase(i);
+			obj.erase(o);
+			break;
 		}
+		o++;
 	}
 }
 
@@ -196,3 +201,4 @@ void clients::setobj(client *c,game_objekt *o)
 		}
 	}
 }
+

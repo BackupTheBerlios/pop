@@ -12,3 +12,4 @@ int pops_getstatus();
 void pops_statuswechsel(int num);
 
 #endif
+

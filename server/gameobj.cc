@@ -238,8 +238,11 @@ void spieler::calccoll(vector <game_objekt *> *objs)
 			getcorners(s->nx,s->ny,s->nrichtung,sxn,syn);
 			for (int i1=0;i1<4;i1++) {
 				for (int i2=0;i2<4;i2++) {
-					int s1=getsitel(sxn[i2],syn[i2],sxn[(i2+1)%4],syn[(i2+1)%4],xb[i1],yb[i1]);
-					int s2=getsitel(sxn[i2],syn[i2],sxn[(i2+1)%4],syn[(i2+1)%4],xn[i1],yn[i1]);
+// abkürzung
+#define f	(int)
+					int s1=getsitel(f sxn[i2],f syn[i2],f sxn[(i2+1)%4],f syn[(i2+1)%4],f xb[i1],f yb[i1]);
+					int s2=getsitel(f sxn[i2],f syn[i2],f sxn[(i2+1)%4],f syn[(i2+1)%4],f xn[i1],f yn[i1]);
+#undef f
 					if (s1!=s2 && s1!=0 && s2!=0) {
 						float t=v;
 						v=s->v;

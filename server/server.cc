@@ -36,6 +36,8 @@
 #include "client.h"
 #include "gameobj.h"
 
+using namespace std;
+
 /* globale Variablen */
 serverchan *sc;
 levels *ls;

@@ -10,24 +10,25 @@
 /***************************************/
 
 #ifndef __INLINE__
-#define __INLINE__ extern inline
+#define __INLINE__ inline
 #endif
 
-typedef long fixed;
+// STL also has a fixed
+typedef long ffixed;
 
-__INLINE__ fixed itofix(int x)
+__INLINE__ ffixed itofix(int x)
 { 
    return x << 16;
 }
 
 
-__INLINE__ int fixtoi(fixed x) 
+__INLINE__ int fixtoi(ffixed x) 
 { 
    return (x >> 16) + ((x & 0x8000) >> 15);
 }
 
 
-__INLINE__ fixed ftofix(double x) 
+__INLINE__ ffixed ftofix(double x) 
 { 
    if (x > 32767.0) {
       errno = ERANGE;
@@ -43,43 +44,43 @@ __INLINE__ fixed ftofix(double x)
 }
 
 
-__INLINE__ double fixtof(fixed x) 
+__INLINE__ double fixtof(ffixed x) 
 { 
    return (double)x / 65536.0; 
 }
 
 
-fixed fsqrt(fixed x);
-fixed fatan(fixed x);
-fixed fatan2(fixed y, fixed x);
+ffixed fsqrt(ffixed x);
+ffixed fatan(ffixed x);
+ffixed fatan2(ffixed y, ffixed x);
 
-extern fixed _cos_tbl[];
-extern fixed _tan_tbl[];
-extern fixed _acos_tbl[];
+extern ffixed _cos_tbl[];
+extern ffixed _tan_tbl[];
+extern ffixed _acos_tbl[];
 
 
-__INLINE__ fixed fcos(fixed x)
+__INLINE__ ffixed fcos(ffixed x)
 {
    return _cos_tbl[((x + 0x4000) >> 15) & 0x1FF];
 }
 
 
-__INLINE__ fixed fsin(fixed x) 
+__INLINE__ ffixed fsin(ffixed x) 
 { 
    return _cos_tbl[((x - 0x400000 + 0x4000) >> 15) & 0x1FF];
 }
 
 
-__INLINE__ fixed ftan(fixed x) 
+__INLINE__ ffixed ftan(ffixed x) 
 { 
    return _tan_tbl[((x + 0x4000) >> 15) & 0xFF];
 }
 
 
-__INLINE__ fixed facos(fixed x)
+__INLINE__ ffixed facos(ffixed x)
 {
    /* equivalent to if((x < -65536) || (x > 65536)) */
-   if ((fixed)(x-0x80000000+65536) > (fixed)(-0x80000000+65536+65536)) {
+   if ((ffixed)(x-0x80000000+65536) > (ffixed)(-0x80000000+65536+65536)) {
       errno = EDOM;
       return 0;
    }
@@ -88,10 +89,10 @@ __INLINE__ fixed facos(fixed x)
 }
 
 
-__INLINE__ fixed fasin(fixed x) 
+__INLINE__ ffixed fasin(ffixed x) 
 { 
    /* equivalent to if((x < -65536) || (x > 65536)) */
-   if ((fixed)(x-0x80000000+65536) > (fixed)(-0x80000000+65536+65536)) {
+   if ((ffixed)(x-0x80000000+65536) > (ffixed)(-0x80000000+65536+65536)) {
       errno = EDOM;
       return 0;
    }
@@ -100,11 +101,11 @@ __INLINE__ fixed fasin(fixed x)
 }
 
 
-__INLINE__ fixed fadd(fixed x, fixed y)
+__INLINE__ ffixed fadd(ffixed x, ffixed y)
 {
 #if defined __GNUC__ && defined __i386__
    /* for gcc on i386 */
-   fixed result;
+   ffixed result;
 
    asm (
       "  addl %2, %0 ; "                  /* do the addition */
@@ -131,7 +132,7 @@ __INLINE__ fixed fadd(fixed x, fixed y)
    return result;
 #else
    /* for other compilers/platforms */
-   fixed result = x + y;
+   ffixed result = x + y;
 
    if (result >= 0) {
       if ((x < 0) && (y < 0)) {
@@ -153,11 +154,11 @@ __INLINE__ fixed fadd(fixed x, fixed y)
 }
 
 
-__INLINE__ fixed fsub(fixed x, fixed y)
+__INLINE__ ffixed fsub(ffixed x, ffixed y)
 {
 #if defined __GNUC__ && defined __i386__
    /* for gcc on i386 */
-   fixed result;
+   ffixed result;
 
    asm (
       "  subl %2, %0 ; "                  /* do the subtraction */
@@ -165,7 +166,7 @@ __INLINE__ fixed fsub(fixed x, fixed y)
 
       "  movl %3, %4 ; "                  /* on overflow, set errno */
       "  movl $0x7FFFFFFF, %0 ; "         /* and return MAXINT */
-      "  cmpl $0, %2 ; " 
+      "  cmpl $0, %2 ; "
       "  jl 0f ; "
       "  negl %0 ; "
 
@@ -184,7 +185,7 @@ __INLINE__ fixed fsub(fixed x, fixed y)
    return result;
 #else
    /* for other compilers/platforms */
-   fixed result = x - y;
+   ffixed result = x - y;
 
    if (result >= 0) {
       if ((x < 0) && (y > 0)) {
@@ -206,12 +207,12 @@ __INLINE__ fixed fsub(fixed x, fixed y)
 }
 
 
-__INLINE__ fixed fmul(fixed x, fixed y)
+__INLINE__ ffixed fmul(ffixed x, ffixed y)
 {
 #if defined __GNUC__ && defined __i386__
    /* for gcc on i386 */
-   fixed edx __attribute__ ((__unused__));
-   fixed result;
+   ffixed edx __attribute__ ((__unused__));
+   ffixed result;
 
    asm (
       "  movl %2, %0 ; "
@@ -225,11 +226,11 @@ __INLINE__ fixed fmul(fixed x, fixed y)
 
       "  movl %4, %5 ; "                  /* on overflow, set errno */
       "  movl $0x7FFFFFFF, %0 ; "         /* and return MAXINT */
-      "  cmpl $0, %2 ; " 
+      "  cmpl $0, %2 ; "
       "  jge 1f ; "
       "  negl %0 ; "
       " 1: "
-      "  cmpl $0, %3 ; " 
+      "  cmpl $0, %3 ; "
       "  jge 0f ; "
       "  negl %0 ; "
 
@@ -254,13 +255,13 @@ __INLINE__ fixed fmul(fixed x, fixed y)
 }
 
 
-__INLINE__ fixed fdiv(fixed x, fixed y)
+__INLINE__ ffixed fdiv(ffixed x, ffixed y)
 {
 #if defined __GNUC__ && defined __i386__
    /* for gcc on i386 */
-   fixed edx __attribute__ ((__unused__));
-   fixed reg __attribute__ ((__unused__));
-   fixed result;
+   ffixed edx __attribute__ ((__unused__));
+   ffixed reg __attribute__ ((__unused__));
+   ffixed result;
 
    asm (
       "  testl %0, %0 ; "                 /* test sign of x */
@@ -338,10 +339,10 @@ __INLINE__ fixed fdiv(fixed x, fixed y)
 #endif
 }
 
-class fix      /* C++ wrapper for the fixed point routines */
+class fix      /* C++ wrapper for the ffixed point routines */
 {
 public:
-   fixed v;
+   ffixed v;
 
    fix()                                     { }
    fix(const fix &x)                         { v = x.v; }

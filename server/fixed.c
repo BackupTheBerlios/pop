@@ -20,7 +20,7 @@
 
 #include "fixed.h"
 
-fixed _cos_tbl[512] =
+ffixed _cos_tbl[512] =
 {
    /* precalculated fixed point (16.16) cosines for a full circle (0-255) */
 
@@ -92,7 +92,7 @@ fixed _cos_tbl[512] =
 
 
 
-fixed _tan_tbl[256] =
+ffixed _tan_tbl[256] =
 {
    /* precalculated fixed point (16.16) tangents for a half circle (0-127) */
 
@@ -132,7 +132,7 @@ fixed _tan_tbl[256] =
 
 
 
-fixed _acos_tbl[513] =
+ffixed _acos_tbl[513] =
 {
    /* precalculated fixed point (16.16) inverse cosines (-1 to 1) */
 
@@ -248,10 +248,10 @@ static short sqrt_table[256] =
 /* fatan:
  *  Fixed point inverse tangent. Does a binary search on the tan table.
  */
-fixed fatan(fixed x)
+ffixed fatan(ffixed x)
 {
    int a, b, c;            /* for binary search */
-   fixed d;                /* difference value for search */
+   ffixed d;                /* difference value for search */
 
    if (x >= 0) {           /* search the first part of tan table */
       a = 0;
@@ -285,9 +285,9 @@ fixed fatan(fixed x)
 /* fatan2:
  *  Like the libc atan2, but for fixed point numbers.
  */
-fixed fatan2(fixed y, fixed x)
+ffixed fatan2(ffixed y, ffixed x)
 {
-   fixed r;
+   ffixed r;
 
    if (x==0) {
       if (y==0) {
@@ -323,12 +323,12 @@ fixed fatan2(fixed y, fixed x)
  *  Fixed point square root routine. This code is taken from the fixfloat
  *  library by Arne Steinarson.
  */
-fixed fsqrt(fixed x)
+ffixed fsqrt(ffixed x)
 {
 #if defined __GNUC__ && defined __i386__ && defined DJGPP
-   fixed ecx __attribute__ ((__unused__));
-   fixed edx __attribute__ ((__unused__));
-   fixed result;
+   ffixed ecx __attribute__ ((__unused__));
+   ffixed edx __attribute__ ((__unused__));
+   ffixed result;
 
    if (x <= 0) {
       if (x < 0)
@@ -417,7 +417,7 @@ fixed fsqrt(fixed x)
    return result;
 #else
    /* for other compilers/platforms */
-   fixed result;
+   ffixed result;
 
    if (x <= 0) {
       if (x < 0)

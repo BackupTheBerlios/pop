@@ -28,6 +28,8 @@
  * Datenstrukturen *
  *******************/
 
+using namespace std;
+
 // Normale Breite und Höhe eines Teils
 #define LEVEL_NORMTB	640
 #define LEVEL_NORMTH	480

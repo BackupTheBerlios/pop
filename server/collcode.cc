@@ -1,5 +1,7 @@
 // include this file with #include in your source
 
+#include <iostream.h>
+
 #ifndef RELATIV
         #define RELATIV 1
 #endif
