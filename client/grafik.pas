@@ -6,14 +6,14 @@ procedure grafik_load;
 procedure grafik_init;
 procedure grafik_run;
 procedure grafik_exit;
-procedure grafik_setmsg(num : integer; str : String);
+procedure grafik_setmsg(num : integer; msgstr : String);
 
 var
 	strtanz : integer;
 
 implementation
 
-uses allunit, gvars, auto, netclient, config, fehler, leveldat;
+uses message, allunit, gvars, auto, netclient, config, fehler, leveldat;
 
 type
   tpos = record
@@ -29,7 +29,7 @@ type
   end;
 
 const
-	MSG_ANZ = 4;
+	MSG_ANZ = 7;
 	TIMER_FREQ = 10;
 
 var teile : strteile;
@@ -77,6 +77,30 @@ begin
  m[4].f:=TIMER_FREQ div 2;     {2 mal pro Sekunde blinken}
  m[4].starttime:=-1;
  m[4].endtime:=-1;
+
+ {Falscher Weg}
+ m[5].bild:=load_bitmap(PFAD_LEVELGFX+'msgwway.pcx',nil);
+ m[5].xp:=0;
+ m[5].yp:=0;
+ m[5].f:=TIMER_FREQ div 4;
+ m[5].starttime:=-1;
+ m[5].endtime:=-1;
+
+ {Runde beendet}
+ m[6].bild:=load_bitmap(PFAD_LEVELGFX+'msground.pcx',nil);
+ m[6].xp:=0;
+ m[6].yp:=0;
+ m[6].f:=TIMER_FREQ;
+ m[6].starttime:=-1;
+ m[6].endtime:=-1;
+ 
+ {letzte Runde}
+ m[7].bild:=load_bitmap(PFAD_LEVELGFX+'msgllap.pcx',nil);
+ m[7].xp:=0;
+ m[7].yp:=0;
+ m[7].f:=TIMER_FREQ;
+ m[7].starttime:=-1;
+ m[7].endtime:=-1;
 
  {Alles korrekt geladen?}
  for i:=1 to MSG_ANZ do begin
@@ -132,7 +156,7 @@ begin
  end;
 end;
 
-procedure grafik_setmsg(num : integer; meldung : String);
+procedure grafik_setmsg(num : integer; msgstr : String);
 begin
  case num of 
   11: begin {Ampel1} 
@@ -144,6 +168,7 @@ begin
 	m[1].starttime:=-1; m[1].endtime:=-1;
 	m[2].starttime:=timepos; m[2].endtime:=timepos+TIMER_FREQ*4;
 	m[3].starttime:=-1; m[3].endtime:=-1;
+	sendmsg(SOUND,2,0,1);
 	end;
   13: begin {Ampel3}
 	m[1].starttime:=-1; m[1].endtime:=-1;
@@ -152,6 +177,22 @@ begin
 	end;
   20: begin {Checkpoint}
 	m[4].starttime:=timepos; m[4].endtime:=timepos+TIMER_FREQ*3;
+	end;
+  21: begin {Runde gepackt}
+	if msgstr='letzte' then begin
+		{letzte Runde}
+		m[7].starttime:=timepos; m[7].endtime:=timepos+TIMER_FREQ*3;
+		sendmsg (SOUND,2,0,6);
+	end else if msgstr='fertig' then begin
+		writeln ('Over');
+		sendmsg (SOUND,2,0,5);
+	end else begin
+		{irgendeine Runde}
+		m[6].starttime:=timepos; m[6].endtime:=timepos+TIMER_FREQ*3;
+	end;
+	end;
+  22: begin {Falsche Richtung}
+	m[5].starttime:=timepos; m[5].endtime:=timepos+TIMER_FREQ*3;
 	end;
  end;
 end;

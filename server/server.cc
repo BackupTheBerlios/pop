@@ -45,6 +45,7 @@ list<client> clients;
 int clientnum;
 int status;
 int starttime;
+volatile unsigned int timepos;
 
 objdyn *outbuf;
 
@@ -116,7 +117,7 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
   if (status==STATUS_WAIT) {
    switch (n) {
     // Anmeldung 1
-    case 50: // Bildschirm Aufl÷sung
+    case 50: // Bildschirm Auflösung
      ac->setres (a1,a2);
      cout << "Bildschirmauflösung:" << a1 << "," << a2 << "\n";
      break;
@@ -214,7 +215,7 @@ void pops_rcvmsgs (s_client *s,int g,int n,int a1,const char *a2)
 
  if (g==G_SETUP) {
   switch (n) {
-   case 60: // Namen ge„ndert
+   case 60: // Namen geändert
     ac->setname (a2);
     serv_sendmsgs_all (sc,G_SETUP,11,ac->getnum(),a2);
     cout << "Nummer " << ac->getnum() << " changed Name to " << a2 << "\n";

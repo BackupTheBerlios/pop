@@ -26,7 +26,7 @@ implementation
 
 uses gvars,allunit,config,fehler,ende,message,msgnet,netclient,eing;
 
-const BUTTON_ANZ = 12; {Anzahl der Buttons in Haupt- und Untermenü}
+const BUTTON_ANZ = 14; {Anzahl der Buttons in Haupt- und Untermenü}
 
 	{Nummern der Untermenüs}
 	MENU_WAIT = 1;
@@ -85,47 +85,60 @@ begin
  b[4].ypos := 350;
 
  {Untermenue "Spielen"}
- b[5].bild1 := load_bitmap(PFAD_MENU+'strecke1.pcx', nil);
- b[5].bild2 := load_bitmap(PFAD_MENU+'strecke2.pcx', nil);
+ b[5].bild1 := load_bitmap(PFAD_MENU+'weiter1.pcx', nil);
+ b[5].bild2 := load_bitmap(PFAD_MENU+'weiter2.pcx', nil);
  b[5].xpos := 430;
- b[5].ypos := 200;
+ b[5].ypos := 150;
 
- b[6].bild1 := load_bitmap(PFAD_MENU+'auto1.pcx', nil);
- b[6].bild2 := load_bitmap(PFAD_MENU+'auto2.pcx', nil);
+ b[6].bild1 := load_bitmap(PFAD_MENU+'strecke1.pcx', nil);
+ b[6].bild2 := load_bitmap(PFAD_MENU+'strecke2.pcx', nil);
  b[6].xpos := 430;
- b[6].ypos := 250;
+ b[6].ypos := 200;
 
- b[7].bild1 := load_bitmap(PFAD_MENU+'name1.pcx', nil);
- b[7].bild2 := load_bitmap(PFAD_MENU+'name2.pcx', nil);
+ b[7].bild1 := load_bitmap(PFAD_MENU+'auto1.pcx', nil);
+ b[7].bild2 := load_bitmap(PFAD_MENU+'auto2.pcx', nil);
  b[7].xpos := 430;
- b[7].ypos := 300;
+ b[7].ypos := 250;
 
- b[8].bild1 := load_bitmap(PFAD_MENU+'zurueck1.pcx', nil);
- b[8].bild2 := load_bitmap(PFAD_MENU+'zurueck2.pcx', nil);
+ b[8].bild1 := load_bitmap(PFAD_MENU+'name1.pcx', nil);
+ b[8].bild2 := load_bitmap(PFAD_MENU+'name2.pcx', nil);
  b[8].xpos := 430;
- b[8].ypos := 350;
+ b[8].ypos := 300;
+
+ b[9].bild1 := load_bitmap(PFAD_MENU+'zurueck1.pcx', nil);
+ b[9].bild2 := load_bitmap(PFAD_MENU+'zurueck2.pcx', nil);
+ b[9].xpos := 430;
+ b[9].ypos := 350;
 
  {keine Levelgrafik}
- b[9].bild1 := load_bitmap(PFAD_MENU_LEVEL+'nogfx.pcx', nil);
- b[9].bild2 := b[9].bild1;
- b[9].xpos := 0;
- b[9].ypos := 480-100;
+ b[10].bild1 := load_bitmap(PFAD_MENU_LEVEL+'nogfx.pcx', nil);
+ b[10].bild2 := b[10].bild1;
+ b[10].xpos := 0;
+ b[10].ypos := 480-100;
 
- b[10].bild1 := load_bitmap(PFAD_MENU+'weiter1.pcx', nil);
- b[10].bild2 := load_bitmap(PFAD_MENU+'weiter2.pcx', nil);
- b[10].xpos := 430;
- b[10].ypos := 200;
-
- b[11].bild1 := b[8].bild1; {Bild zurück}
- b[11].bild2 := b[8].bild2;
+ b[11].bild1 := b[5].bild1; {Bild weiter}
+ b[11].bild2 := b[5].bild2;
  b[11].xpos := 430;
- b[11].ypos := 250;
+ b[11].ypos := 200;
  b[11].nodel := true;
 
- b[12].bild1 := load_bitmap(PFAD_MENU+'ok1.pcx',nil);
- b[12].bild2 := load_bitmap(PFAD_MENU+'ok2.pcx',nil);
+ b[12].bild1 := b[9].bild1; {Bild zurück}
+ b[12].bild2 := b[9].bild2;
  b[12].xpos := 430;
- b[12].ypos := 300;
+ b[12].ypos := 250;
+ b[12].nodel := true;
+
+ b[13].bild1 := load_bitmap(PFAD_MENU+'ok1.pcx',nil);
+ b[13].bild2 := load_bitmap(PFAD_MENU+'ok2.pcx',nil);
+ b[13].xpos := 430;
+ b[13].ypos := 300;
+ 
+ {Menü Auto}
+ b[14].bild1 := b[5].bild1;
+ b[14].bild2 := b[5].bild2;
+ b[14].xpos := 430;
+ b[14].ypos := 200;
+ b[14].nodel := true;
 
  txtf.bild1 := load_bitmap(PFAD_MENU+'textfeld.pcx',nil);
  txtf.xpos := 300;
@@ -172,14 +185,14 @@ begin
  end;
  if lastl <> alevelname then begin
   lastl:=alevelname;
-  if m[9].bild1<>nil then
-   destroy_bitmap(m[9].bild1);
-  m[9].bild1:=load_bitmap(PFAD_MENU_LEVEL+lastl+'.pcx',nil);
-  if m[9].bild1 = nil then
-   m[9].bild1:=load_bitmap(PFAD_MENU_LEVEL+'nogfx.pcx',nil);
-  if m[9].bild1 = nil then
+  if m[10].bild1<>nil then
+   destroy_bitmap(m[10].bild1);
+  m[10].bild1:=load_bitmap(PFAD_MENU_LEVEL+lastl+'.pcx',nil);
+  if m[10].bild1 = nil then
+   m[10].bild1:=load_bitmap(PFAD_MENU_LEVEL+'nogfx.pcx',nil);
+  if m[10].bild1 = nil then
    fehler ('nogfx.pcx ist verschwunden (Eben wars doch noch da?!?)');
-  m[9].bild2:=m[9].bild1;
+  m[10].bild2:=m[10].bild1;
   menu_draw;
  end;   
 end;
@@ -262,14 +275,16 @@ begin
    4 : begin {Button Ende}
         sendmsg (SETUP,1,STATUS_ENDE,0);
        end;
-   5 : begin {Button Strecke}
+   5 : begin {Button weiter}
+	  sendmsg (SETUP+NET,63,0,0);
+       end;
+   6 : begin {Button Strecke}
 	  subm:=MENU_STRECKE;
 	  menu_draw;
        end;
-   6 : begin {Button Auto}
-        sendmsg (SETUP+NET,63,0,0);
-       end;
-   7 : begin {Button Name}
+   7 : begin {Auto}
+	 end;
+   8 : begin {Button Name}
         scare_mouse;
         draw_menu(m,0,0); {malt Hintergrund bund }
         draw_sprite(screen, txtf.bild1, txtf.xpos, txtf.ypos);
@@ -278,24 +293,24 @@ begin
         unscare_mouse;
 	  menu_draw;
        end;
-   8 : begin {Button zurück}
+   9 : begin {Button zurück}
         sendmsg (SETUP,1,STATUS_NO_CONNECT,0);
        end;
-   9 : begin
+   10 : begin 
        end;
-   10: begin {Button nächste Strecke}
+   11: begin {Button nächste Strecke}
 	  if alevelnum+1<anz_level then begin
 		inc(alevelnum);
 		sendmsg(SETUP+NET,62,alevelnum,0);
 	  end;
       end;
-   11: begin {Button letzter Level}
+   12: begin {Button letzter Level}
 	  if alevelnum>0 then begin
 		dec(alevelnum);
 		sendmsg(SETUP+NET,62,alevelnum,0);
         end;
        end;
-   12 : begin {Button Strecke/Zurück}
+   13 : begin {Button Strecke/Zurück}
 		subm:=MENU_WAIT;
 		menu_draw;
 	  end;
@@ -345,10 +360,10 @@ begin
   end else begin
    case subm of
     MENU_WAIT:
- 	  check_menu (m,5,8);	{Trick: Bild9 ist der Level, der sich
+ 	  check_menu (m,5,9);	{Trick: Bild9 ist der Level, der sich
  					nicht ändert }
     MENU_STRECKE:
- 	  check_menu (m,10,12);
+ 	  check_menu (m,11,13);
    end;
   end;
  end;
@@ -370,9 +385,9 @@ begin
   {Level, Name + Autoauswahl}
   case subm of
    MENU_WAIT:
-	  draw_menu (m,5,9);
+	  draw_menu (m,5,10);
    MENU_STRECKE:
-        draw_menu (m,9,12);
+        draw_menu (m,10,13);
   end;
   draw_netstatus;
  end;

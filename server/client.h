@@ -71,9 +71,11 @@ public:
   autodaten *car;
   float f,v;
   float px,py,richtung;
+  float nx,ny;
   float drehung;
   int acp;
   int round;
+  int fertig;
 
        spieler(client *c);
   void setcar(int num);
@@ -83,6 +85,8 @@ public:
   virtual void setpos(unsigned short x,unsigned short y);
   virtual void setrot(fix r);
   void getstatus(char *msg);
+  void inline calcmove();
+  void inline checkstoss();
 };
 
 class client

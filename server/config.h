@@ -49,7 +49,7 @@ extern int FPS;
 #define PFAD_POP        "../data/"
 #endif
 
-#define PFAD_AUTOGFX    PFAD_POP"grafik/panda/"
+#define PFAD_AUTOGFX    PFAD_POP"grafik/autos/"
 #define PFAD_LEVEL      PFAD_POP"level/"
 #define PFAD_LEVELTEILE PFAD_POP"grafik/strecke/"
 

@@ -102,7 +102,7 @@ begin
  picts[4]:=loadbild(PFAD_ENDE+'bild5.bmp',PICB,PICH);
  picts[5]:=loadbild(PFAD_ENDE+'bild6.bmp',PICB,PICH);
 
- for i:=0 to 5 do begin
+ for i:=0 to anzpictures-1 do begin
   if picts[i]=nil then errorende;
  end;
 end;

@@ -1,4 +1,4 @@
-PFAD_POP = c:/progr/pascal/pop/data/
+PFAD_POP = ../data/
 GOAL = popclient.exe
 LIBS = -lmingw32 -lmsvcrt -lalleg -lgpc
 DEFS = -DCYGWIN -DPFAD_POP='"$(PFAD_POP)"'

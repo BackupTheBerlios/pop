@@ -236,60 +236,48 @@ float inline abs(float a)
 	return a<0 ? -a : a;
 }
 
-
 extern int starttime; // Hack
-                           				
-void spieler::calc()
+
+#define vmax	7
+#define kkonst	0.8
+#define DKONST	0.2
+
+void inline spieler::checkstoss()
 {
- if (starttime<=0) {
-#if 1
- if (f>0) {
-  v += f - ( ((abs(v))/km)*f );
-  //if (v<0) v=0;
- } else if (f<0) {
-  v += f;
-  v += ((-abs(v))/km)*(-f);
-  //if (v>0) v=0;
- } else {
-  v -= ((v)/km)*0.1;
- }
-#else
-
-#define BCONST	8.243606
-
- if (f>0) {
-	v += BCONST * exp (v);
- }
-#endif
-
- richtung += drehung * (M_PI/180); // 5 Grad Schritte...
- float nx,ny;
- nx=px+sin(richtung)*v;
- ny=py-cos(richtung)*v;
-
  int s= al.stoss(px,py,nx,ny);
 
+ // Rundenzählen
  if (s>=2) {
-	cout << "CP! Num:" << s << "\n";
 	if (s-2==acp) {
 		acp++;
 		if (acp==6) {
 			round++;
 			cout << "Runde " << round << " beendet!\n";
+			if (round==2) {
+				sendmsg(21,"letzte");
+			} else if (round==3) {
+				sendmsg(21,"fertig");
+				fertig=timepos;
+			} else {
+				sendmsg(21,"");
+			}
 			acp=0;
+		} else {
+			sendmsg(20,"");	// Checkpoint
 		}
-		sendmsg(20,"");	// Checkpoint
 	} else if (s-2==(acp+5)%6) {
 		if (acp==0) {
 			cout << "Runde weniger!\n";
 			round--;
 		}
 		acp=(acp+5)%6;
-		sendmsg(21,"");	// Wrong way
+		sendmsg(22,"");	// Wrong way
 	} else {
 		cout << "Fehlerhaftes Leveldesign!!!\n";
 	}
  }
+
+ // Stoss beachten?
  if (s==1) {
   // angestoßen
   v=-(v/2);
@@ -299,13 +287,49 @@ void spieler::calc()
   px=nx;
   py=ny;
  }
+}
 
- if (px<0) px=0;
- if (px>al.b * 640) px=al.b*640;
- if (py<0) py=0;
- if (py>al.h * 480) py=al.h*480;
+void inline spieler::calcmove()
+{
+ if (starttime<=0) { // Rennen schon gestartet
+
+ if (fertig) {
+        // Alle Runden beendet => abbremsen
+	v-=0.125;
+	if (v<0) v=0;
+ } else {
+  if (f>0) { // beschleunigen
+	  if (v>=vmax)
+		v=vmax-0.0001;
+	  float t= log(vmax/(vmax-v))/kkonst;
+	  t+=(float)1/FPS;
+	  v=vmax*(1-exp(-kkonst*t));
+  } else if (f<0) { //bremsen
+	  v += f;
+	  v += ((-abs(v))/km)*(-f);
+  } else {
+	  v -= ((v)/km)*0.1;
+  }
  }
 
+ richtung += drehung * (M_PI/180); // 5 Grad Schritte...
+ float nx,ny;
+ nx=px+sin(richtung)*v;
+ ny=py-cos(richtung)*v;
+
+ if (nx<0) nx=0;
+ if (nx>al.b * 640) nx=al.b*640;
+ if (ny<0) ny=0;
+ if (ny>al.h * 480) ny=al.h*480;
+ }
+}
+
+void spieler::calc()
+{
+ calcmove();
+ checkstoss();
+
+ // Werte setzen
  dyn.xp = (short unsigned int) px;
  dyn.yp = (short unsigned int) py;
  dyn.richtung = richtung * (128/M_PI);

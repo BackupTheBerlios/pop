@@ -203,6 +203,7 @@ begin
     sound_fehler :='Sound Motor nicht gefunden!';
 
   if sound_fehler <> '' then begin
+   writeln (sound_fehler);
    sendmsgs (DEBUG,0,0,'Sound is deactivated! Cause:');
    sendmsgs (DEBUG,0,0,sound_fehler);
    sound_enabled:=false;

@@ -4,5 +4,6 @@
 #include "message.h"
 
 extern serverchan *sc;
+extern volatile unsigned int timepos;
 
 #endif

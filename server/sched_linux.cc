@@ -6,18 +6,19 @@
 #include <signal.h>
 #include <iostream.h>
 
+#include "server.h"
 #include "schedule.h"
 #include "status.h"
 
 #define CLOCK_TICKS			1000/FPS
-#define DIV_TICKS				4
-#define EFF_TICKS				CLOCK_TICKS/DIV_TICKS
+#define EFF_TICKS				CLOCK_TICKS/4
 
-static bool go;
+static volatile bool go;
 
 void sighandler(int)
 {
  go=true;
+ timepos++;
 }
 
 void pops_initschedule()
@@ -31,13 +32,13 @@ void pops_initschedule()
 
 int pops_shedule()
 {
- usleep(EFF_TICKS);
+ usleep(CLOCK_TICKS);
 
  if (go) {
-  go=false;
-  return 1;
+	go=false;
+	return 1;
  } else
-  return 0;
+	return 0;
 }
 
 void pops_exitschedule()
@@ -75,7 +76,7 @@ void pops_run()
    switch (pops_getstatus()) {
     case STATUS_WAIT:
      pops_calcnet();
-     usleep (300);
+     usleep (100);
      break;
     case STATUS_RUN:
      // Init Teil!
@@ -88,7 +89,7 @@ void pops_run()
        pops_calcnet();
        pops_calculate();
        //printf ("f");
-       fflush(stdout);
+       //fflush(stdout);
       } else {
        pops_calcnet();
       }
@@ -101,7 +102,7 @@ void pops_run()
     case STATUS_LOAD:
      pops_calcnet();
      pops_calcl();
-     usleep (300);
+     usleep (100);
      break;
     default:
      pops_calcnet();

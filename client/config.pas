@@ -83,10 +83,10 @@ begin
  PFAD_ENDE := PFAD_POP + 'grafik/ende/';
  PFAD_LEVEL := PFAD_POP + 'level/';
  PFAD_LEVELGFX := PFAD_POP + 'grafik/strecke/';
- PFAD_AUTOGFX := PFAD_POP + 'grafik/panda/';
+ PFAD_AUTOGFX := PFAD_POP + 'grafik/autos/';
  PFAD_MENU := PFAD_POP + 'grafik/menu/';
  PFAD_MENU_LEVEL := PFAD_POP + 'grafik/level/';
- PFAD_SOUND := PFAD_POP + 'sound/gfx/';
+ PFAD_SOUND := PFAD_POP + 'sound/sfx/';
  PFAD_MUSIC := PFAD_USERDATA + 'sound/music/';
 
  BILDSCHIRMX := 640;
