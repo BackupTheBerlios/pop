@@ -43,11 +43,10 @@ int level::load(const char *file)
 
  is->close();
 
- if (b<0 || b>=LEVELMAXX || h<0 || h>=LEVELMAXY)
+ if (b<0 || b>=LEVELMAXX || h<0 || h>=LEVELMAXY) {
+  cout << "B,h\n" << b << "," << h << "\n";
   return -3;
-
- if (startx<0 || startx>=b || starty<0 || starty>=h)
-  return -4;
+ }
 
  // Namen berechnen...
  int p1,p2;

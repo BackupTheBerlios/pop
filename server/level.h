@@ -42,11 +42,16 @@ class levelteile
 
 typedef unsigned char strtyp;
 
+typedef struct
+{
+	unsigned short x,y;
+} pos;
+
 class level
 {
 public:
- int startx,starty;
  int b,h;
+ pos cpoints[6];
  int res[20]; // Reserviert für Erweiterungen (nicht löschen!)
  char *name;  // Achtung! Ist ein Pointer immer 4 Bytes groß?
  strtyp l[LEVELMAXX][LEVELMAXY];
