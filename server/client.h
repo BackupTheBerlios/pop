@@ -20,6 +20,7 @@
 
 #include <vector>
 
+#include <stdio.h>
 #include "message.h"
 #include "level.h"
 #include "auto.h"
@@ -45,19 +46,24 @@ public:
 
 	// Iterator
 	typedef vector<client>::iterator iterator;
+	typedef vector<game_objekt *>::iterator iteratoro;
 
 	// Find Client funcs
 	client *findclient(s_client *adr);
 	client *findclient(int i);
 	iterator begin()	{ return clist.begin(); }
 	iterator end()	{ return clist.end(); }
+	iteratoro begino() { return obj.begin(); }
+	iteratoro endo()	{ return obj.end(); }
 
 	// Algemein
 	void calc();
 	int size();
+	void setobj(client *c,game_objekt *o);
 	
 protected:
 	vector<client> clist;
+	vector<game_objekt *> obj;
 };
 
 class game_objekt;
@@ -70,27 +76,27 @@ class client
 
   void init() {}
 
-  void initobj (int typ);
   void setstatus (int st);
   int getstatus();
+  void setobj (game_objekt *o) { obj=o; }
 
-  void selectcar(int num);
-  void contr(int num,int a) { obj->contr(num,a); }
-  void calc1() { obj->calcpos(); }
   void lcalc();
-  void send(objdyn *datao);
   void setname(const char *n);
   const char *getname();
   void setnum(int n);
   int getnum();
-  int getobjtyp();
   void setmaster(bool m);
   bool ismaster();
   void setok(bool o);
   bool isok();
   void sendmsg(int num,const char *msg);
+  s_client *geta()	{ return a; }
+  void seta(s_client *ad) { a=ad; }
 
+  //s_client *a;
+  // Oh shit, why must everything be depent on something other?
   game_objekt *obj;
+ protected:
   s_client *a;
 
  private:
@@ -98,7 +104,6 @@ class client
   char name[255];
   int cstatus;
   int stat2;
-  int objtyp;
   bool master;
   bool ok;
 };

@@ -34,6 +34,7 @@
 #include "auto.h"
 #include "level.h"
 #include "client.h"
+#include "gameobj.h"
 
 /* globale Variablen */
 serverchan *sc;
@@ -105,7 +106,10 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
  }
 
  ac=clist.findclient(s);
- if (ac==NULL)	return;
+ if (ac==NULL)	{
+	cout << "Client not found?!? This shouldn't happen\n";
+	return;
+ }
 
  if (g==G_SETUP) {
   // Warten Status
@@ -115,7 +119,15 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
     case 51: // Refreshrate... Kommt noch
      break;
     case 52: // Spielertyp
-     ac->initobj (a1);
+     game_objekt *to;
+     switch (a1) {
+	case 0:
+		to=new zuschauer;
+		clist.setobj(ac,to);
+	case 1:
+		to=new spieler;
+		clist.setobj(ac,to);
+     }
      cout << "Spielertyp:" << a1 << "\n";
      break;
     case 53: // naechste Client Stufe
@@ -135,7 +147,7 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
 
     // Anmeldung 2
     case 61: // Auto Auswahl
-     ac->selectcar (a1);
+     ((spieler*)(ac->obj))->setcar (a1);
      serv_sendmsg_all (sc,G_SETUP,12,ac->getnum(),a1);
      cout << "Nummer " << ac->getnum() << " changed car to:" << a1 << "\n";
      break;
@@ -189,7 +201,7 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
 
  // Tastatur eingaben
  if (g==G_CONTROL) {
-  ac->contr (a2,a1);
+  ac->obj->contr (a2,a1);
   return;
  }
 }
@@ -284,7 +296,7 @@ void pops_delclient (s_client *s)
 
   if (i!=NULL) {
    i->setmaster(true);
-   serv_sendmsg (sc,i->a,G_SETUP,9,1,0); // Client ist jetzt Master
+   serv_sendmsg (sc,i->geta(),G_SETUP,9,1,0); // Client ist jetzt Master
   } else {
    cout << "No Player found... Abort!\n";
   }
@@ -294,23 +306,23 @@ void pops_delclient (s_client *s)
 void pops_acceptclient (client &s)
 {
  // Client Accepted! Daten schicken!
- serv_sendmsg (sc,s.a,G_SETUP,10, s.ismaster() ? 1 : 0, s.getnum());
- serv_sendmsg (sc,s.a,G_SETUP,5, autotypen::getanz(),0);
+ serv_sendmsg (sc,s.geta(),G_SETUP,10, s.ismaster() ? 1 : 0, s.getnum());
+ serv_sendmsg (sc,s.geta(),G_SETUP,5, autotypen::getanz(),0);
  if (s.ismaster())
-  serv_sendmsg (sc,s.a,G_SETUP,6, ls->getanz(),0);
- serv_sendmsgs (sc,s.a,G_SETUP,13, 0, al.name);
+  serv_sendmsg (sc,s.geta(),G_SETUP,6, ls->getanz(),0);
+ serv_sendmsgs (sc,s.geta(),G_SETUP,13, 0, al.name);
 
  clients::iterator i;
  for (i=clist.begin();i!=clist.end();i++) {
-  if (i->a != s.a) {
-   serv_sendmsgs (sc,s.a,G_SETUP,7, i->getnum(), i->getname());
-   serv_sendmsg (sc,s.a, G_SETUP,8, i->getnum(), i->getobjtyp());
+  if (i->geta() != s.geta()) {
+   serv_sendmsgs (sc,s.geta(),G_SETUP,7, i->getnum(), i->getname());
+   serv_sendmsg (sc,s.geta(), G_SETUP,8, i->getnum(), i->obj->gettyp());
   }
  }
 
  // Alle anderen Clients benachrichtigen
  serv_sendmsgs_all (sc,G_SETUP,7,s.getnum(),s.getname());
- serv_sendmsg_all (sc,G_SETUP,8,s.getnum(),s.getobjtyp());
+ serv_sendmsg_all (sc,G_SETUP,8,s.getnum(),s.obj->gettyp());
 }
 
 /* Status wechsel */
@@ -462,10 +474,10 @@ void pops_send()
 
  clients::iterator i;
  for (i=clist.begin();i!=clist.end();i++) {
-  i->send(tbuf);
+  *tbuf=i->obj->dyn;
   tbuf++;
  }
- serv_sendmsgd_all (sc,G_PHYSIK,0,(void*)outbuf,sizeof(objdyn)*clist.size());
+ serv_sendmsgd_all (sc,G_PHYSIK,0,(void*)outbuf,sizeof(objdyn) * clist.size());
 }
 
 void pops_calcnet()

@@ -29,7 +29,7 @@
 #define C_PAUSE_ON	9
 #define C_PAUSE_OFF	10
 #define C_ENDE		11
-#define C_TUT_ON	12
-#define C_TUT_OFF	13
+#define C_TUT_ON		12
+#define C_TUT_OFF		13
 
 #endif

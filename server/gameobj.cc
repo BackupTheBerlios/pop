@@ -8,154 +8,29 @@
 // Shit should remove this, but need some few global vars
 #include "server.h"
 
-/* Client Klasse */
-client::client()
+game_objekt::game_objekt()
 {
- num=0;
- strcpy (name,"");
- cstatus=CSTATUS_ANMELDUNG1;
- stat2=0;
- objtyp=0;
- master=false;
- ok=false;
-
- obj=NULL;
- a=NULL;
+	cl=NULL;
+	dyn.xp=0;
+	dyn.yp=0;
+	dyn.richtung=0;
 }
 
-client::~client()
+void game_objekt::setclient(client *c)
 {
- if (obj)
-  delete obj;
+	cl=c;
 }
 
-void client::initobj (int typ)
+int game_objekt::gettyp()
 {
- if (typ<0 || typ>1) {
-  cout << "Achtung! Fehlerhafter Objekttyp!\n";
-  return;
- }
- if (obj) {
-  cout << "Achtung! Objekt bereits vorhanden. Lösche...\n";
-  delete obj;
- }
- if (typ==0)
-  obj=(game_objekt *) new zuschauer(this);
- if (typ==1)
-  obj=(game_objekt *) new spieler(this);
- objtyp=typ+1;
-}
-
-int client::getobjtyp()
-{
- return objtyp-1;
-}
-
-void client::setstatus(int st)
-{
- if (cstatus==st)
-  return;
-
- cstatus=st;
- if (st==CSTATUS_LOAD2)
-  stat2=0;
-}
-
-int client::getstatus()
-{
- return cstatus;
-}
-
-void client::lcalc()
-{
- strtyp buf[LEVELTRANS];
-
- if (cstatus==CSTATUS_LOAD2) {
-  if (stat2<al.anzdata()) {
-   if (stat2==0)
-    serv_sendmsg (sc,a,G_SETUP,21,al.b,al.h);
-   al.getdata (stat2,buf);
-   stat2++;
-   serv_sendmsgd (sc,a,G_SETUP,22,buf,LEVELTRANS*sizeof(strtyp));
-  }
- }
-}
-
-void client::selectcar (int num)
-{
- if (objtyp==2)
-  ((spieler *) obj)->setcar (num);
-}
-
-void client::setnum(int n)
-{
- num=n;
-}
-
-int client::getnum()
-{
- return num;
-}
-
-void client::setmaster(bool m)
-{
- master=m;
-}
-
-bool client::ismaster()
-{
- return master;
-}
-
-void client::setok(bool o)
-{
- ok=o;
-}
-
-bool client::isok()
-{
- return ok;
-}
-
-void client::setname (const char *n)
-{
- if (strlen(n)<255)
-  strcpy (name,n);
- else
-  cout << "Achtung! Name zu lang!\n";
-}
-
-const char *client::getname()
-{
- return name;
-}
-
-void client::send (objdyn *datao)
-{
- if (obj)
-  memcpy ((void*) datao,(void*) &obj->dyn,sizeof(objdyn));
- else
-  cout << "Achtung! Kein Objekt gesetzt!!! Das sollte NIE passieren!\n";
-}
-
-void client::sendmsg(int num,const char *msg)
-{
- serv_sendmsgs (sc,a,G_SETUP,20,num,msg);
-}
-
-game_objekt::game_objekt(client *c)
-{
- dyn.xp=0;
- dyn.yp=0;
- dyn.richtung=0;
- cl=c;
+	return TYPE_NONE;
 }
 
 void game_objekt::calcpos()
 {
 }
 
-void game_objekt::calccoll(const vector<game_objekt>)
+void game_objekt::calccoll(const vector<game_objekt *>)
 {
 }
 
@@ -184,13 +59,16 @@ void game_objekt::getstatus(char *msg)
 	strcpy (msg,"");
 }
 
-spieler::spieler(client *c)
- : game_objekt (c)
+spieler::spieler()
 {
+ car=NULL;
  v=f=0;
  px=py=richtung=0;
+ nx=ny=0;
+ drehung=0;
  acp=0;
  round=0;
+ fertig=false;
 }
 
 void spieler::setcar(int num)
@@ -231,7 +109,6 @@ void inline spieler::checkstoss()
 		acp++;
 		if (acp==6) {
 			round++;
-			cout << "Runde " << round << " beendet!\n";
 			if (round==2) {
 				sendmsg(21,"letzte");
 			} else if (round==3) {
@@ -246,7 +123,6 @@ void inline spieler::checkstoss()
 		}
 	} else if (s-2==(acp+5)%6) {
 		if (acp==0) {
-			cout << "Runde weniger!\n";
 			round--;
 		}
 		acp=(acp+5)%6;
@@ -311,7 +187,7 @@ void spieler::setnpos()
  dyn.richtung = richtung * (128/M_PI);
 }
 
-void spieler::calccoll(const vector <game_objekt> objs)
+void spieler::calccoll(const vector <game_objekt *> objs)
 {
 	checkstoss();
 	setnpos();
@@ -353,17 +229,17 @@ void spieler::contr(int num,int a1)
    if (drehung==1)
     drehung=0;
    break;
+  default:
+   cout << "Unknown Control:" << num << "\n";
  }
 }
 
-zuschauer::zuschauer(client *c)
- : game_objekt (c)
+zuschauer::zuschauer()
 {
- fx=0;
- fy=0;
+ fx=fy=0;
 }
 
-void zuschauer::calc()
+void zuschauer::calcpos()
 {
  if (-(fx)<=dyn.xp && dyn.xp+fx< al.b*640)
   dyn.xp+=(int)fx;
@@ -371,7 +247,7 @@ void zuschauer::calc()
   dyn.yp+=(int)fy;
 }
 
-#define Z_SPEED	6
+#define Z_SPEED	(FPS/10)
 
 void zuschauer::contr(int num,int a)
 {
@@ -444,5 +320,7 @@ void zuschauer::contr(int num,int a)
    else if (fy==Z_SPEED)
     dyn.richtung=128;
    break;
+  default:
+   cout << "Unknown Control " << num << "\n";
  }
 }
