@@ -11,7 +11,7 @@ PASFLAGS = --automake -Wall -O2 -I. $(DEBUGFLAGS) $(DEFS) $(ADDCFLAGS)
 all: copycommon $(GOAL)
 
 $(GOAL): $(OBJECTS)
-	gpc $(DEBUGFLAGS) -o $(GOAL) $(OBJECTS) $(LIBS)
+	gcc $(DEBUGFLAGS) -o $(GOAL) $(OBJECTS) $(LIBS)
 
 copycommon:
 	for i in $(COMMON); do \

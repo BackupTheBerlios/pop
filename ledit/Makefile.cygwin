@@ -1,0 +1,11 @@
+GOAL = ledit.exe
+PFAD_POP = ../data/
+PFAD_USERDATA = ../data/
+LIBS = -lalleg -lmsvcrt -lmingw32 -lgpc
+#LIBS = `allegro-config --shared`
+DEFS = -DCYGWIN -DPFAD_POP='"$(PFAD_POP)"' -DFAD_USERDATA='"$(PFAD_USERDATA)"'
+ADDCFLAGS = -I /usr/include/mingw
+ADDPFLAFS =
+DEBUGFLAGS = -g
+
+include Makefile.common
