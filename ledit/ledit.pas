@@ -208,6 +208,7 @@ begin
  if level_strload (@s,PFAD_LEVELGFX) < 0 then begin
   allegro_exit;
   writeln ('Achtung! Fehler beim lesen der Levelteile!');
+  writeln ('Verzeichnis:',PFAD_LEVELGFX);
   halt(1);
  end;
 

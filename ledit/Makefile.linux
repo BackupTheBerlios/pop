@@ -1,6 +1,6 @@
 GOAL = ledit
-PFAD_POP = /mnt/PlatteC/progr/pascal/pop/data/
-PFAD_USERDATA = /mnt/PlatteC/progr/pascal/pop/userdata/
+PFAD_POP = ../data/
+PFAD_USERDATA = ../userdata/
 LIBS = `allegro-config --shared` -lefence -lgpc
 #LIBS = `allegro-config --shared`
 DEFS = -DLINUX -DPFAD_POP='"$(PFAD_POP)"' -DFAD_USERDATA='"$(PFAD_USERDATA)"'
