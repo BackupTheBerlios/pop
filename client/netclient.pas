@@ -107,7 +107,7 @@ begin
    end;
    12: begin {Autowechsel}
     if (a1>=MAXPLAYERS) or (a2>=typen.anz) then
-     fehler ('Protokollfehler bei Autoauswahl!');
+     sendmsgs (DEBUG,0,0,'Protokollfehler bei Autowahl');
 
     players[a1].gfx:=typen.d[a2].gfx;
     end;

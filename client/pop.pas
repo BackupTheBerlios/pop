@@ -62,6 +62,10 @@ begin
  sendmsg (SETUP,1,STATUS_NO_CONNECT,0);
  music_init;
 
+ {KrimsKRams laden}
+ if load_autos < 0 then
+	fehler ('Fehler beim laden der Autografik');
+
  {Hauptschleife bis STATUS auf beenden steht}
  while status<>STATUS_ENDE do begin
 
@@ -120,13 +124,6 @@ begin
    {Laden}
    STATUS_LOAD: begin
     draw_load;
-
-    load_message ('Lade Auto Daten...');
-    if load_autos < 0 then begin
-     sendmsg (SETUP,1,STATUS_NO_CONNECT,0);
-     load_messagea ('Fehler!');
-    end else
-    load_messagea ('OK!');
 
     load_message ('Ueberpruefe Daten...');
      netclient_check;

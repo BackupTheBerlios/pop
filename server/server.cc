@@ -127,7 +127,6 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
 		break;
 	case TYPE_SPIELER:
 		to=new spieler;
-		printf ("ObjAdr:%p\n",to);
 		clist.setobj(ac,to);
 		break;
 	default:
@@ -149,6 +148,8 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
      ac->setstatus(CSTATUS_ANMELDUNG2);
 
      pops_acceptclient (*ac);
+     ((spieler*)(ac->obj))->setcar (ac->getnum() % autotypen::d.anz);
+     serv_sendmsg_all (sc,G_SETUP,12,ac->getnum(),ac->getnum() % autotypen::d.anz);
      cout << "Client fully accepted! Nummer:" << ac->getnum() << "\n";
      break;
 
