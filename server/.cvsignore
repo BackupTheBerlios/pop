@@ -2,4 +2,6 @@ Makefile
 *.tmp
 *.swp
 *.kdbgrc.*
+popserver
+popserver.exe
 

@@ -121,11 +121,17 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
     case 52: // Spielertyp
      game_objekt *to;
      switch (a1) {
-	case 0:
+	case TYPE_ZUSCHAUER:
 		to=new zuschauer;
 		clist.setobj(ac,to);
-	case 1:
+		break;
+	case TYPE_SPIELER:
 		to=new spieler;
+		clist.setobj(ac,to);
+		break;
+	default:
+		cout << "Unknown Type! Chose Zuschauer\n";
+		to=new zuschauer;
 		clist.setobj(ac,to);
      }
      cout << "Spielertyp:" << a1 << "\n";
@@ -401,7 +407,7 @@ void pops_calcstart()
   }
  }
 
- starttime=10*FPS;
+ starttime=4*FPS;
  cout << "OK!\n";
 }
 
@@ -444,10 +450,10 @@ void pops_calculate()
 {
  // Noch beim Start?
  if (starttime>=0) {
-	if (starttime==10*FPS) {
+	if (starttime==4*FPS) {
 		cout << "Starttime 2\n";
 		serv_sendmsgs_all(sc,G_SETUP,20,11,"");
-	} else if (starttime==5*FPS) {
+	} else if (starttime==2*FPS) {
 		serv_sendmsgs_all(sc,G_SETUP,20,12,"");
 		cout << "Starttime 1\n";
 	} else if (starttime==0) {
@@ -524,7 +530,7 @@ int main(int argc,char **argv)
 	switch (c) {
 		case 'f':
 			FPS = atoi(optarg);
-			if (FPS<5 || FPS>100) {
+			if (FPS<1 || FPS>100) {
 				cerr << "FPS nicht im bereich 5-100\n";
 				return 1;
 			}

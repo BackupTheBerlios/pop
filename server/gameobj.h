@@ -45,7 +45,7 @@ class zuschauer : public game_objekt
        zuschauer();
   void calcpos();
   void contr(int num,int a);
-  int gettyp()	{ return TYPE_ZUSCHAUER; }
+  int gettyp();
 };
 
 class spieler : public game_objekt
@@ -69,7 +69,7 @@ public:
   virtual void setpos(unsigned short x,unsigned short y);
   virtual void setrot(fix r);
   void getstatus(char *msg);
-  int gettyp()	{ return TYPE_SPIELER; }
+  int gettyp();
 protected:
   void checkcp();
   void setnpos();

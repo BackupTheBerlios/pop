@@ -95,8 +95,8 @@ float inline abs(float a)
 	return a<0 ? -a : a;
 }
 
-#define vmax	7
-#define kkonst	0.8
+#define vmax	(840/FPS)
+#define kkonst	2
 #define DKONST	0.2
 
 void spieler::checkcp()
@@ -175,7 +175,7 @@ void inline spieler::calcpos()
  richtung = nrichtung;
  px=nx;
  py=ny;
- nrichtung +=  drehung * (M_PI/180); // 5 Grad Schritte...
+ nrichtung +=  drehung * (M_PI/(1.5*FPS)); // 10 Grad Schritte...
  nx += sin(nrichtung)*v;
  ny -= cos(nrichtung)*v;
 
@@ -244,6 +244,11 @@ void spieler::getstatus(char *msg)
 	sprintf (msg,"%s - Runde %d",cl->getname(),round);
 }
 
+int spieler::gettyp()
+{
+	return TYPE_SPIELER;
+}
+
 void spieler::contr(int num,int a1)
 {
  switch (num) {
@@ -285,6 +290,11 @@ zuschauer::zuschauer()
  fx=fy=0;
 }
 
+int zuschauer::gettyp()
+{
+	return TYPE_ZUSCHAUER;
+}
+
 void zuschauer::calcpos()
 {
  if (-(fx)<=dyn.xp && dyn.xp+fx< al.b*640)
@@ -293,7 +303,7 @@ void zuschauer::calcpos()
   dyn.yp+=(int)fy;
 }
 
-#define Z_SPEED	(FPS/10)
+#define Z_SPEED	((float)720/FPS)
 
 void zuschauer::contr(int num,int a)
 {
