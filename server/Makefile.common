@@ -1,0 +1,34 @@
+# Makefile common for POp Server
+OBJECTS = auto.o client.o fixed.o level.o messnet.o server.o autos.o \
+	parser.o sched_linux.o strteile.o
+
+COMMON = autos.h autos.c strteile.c messnet.c fixed.c fixed.h message.h \
+	parser.h parser.c sysconf.h strteile.h
+
+CFLAGS = -Wall -O2 -g $(DEFS) $(ADDCFLAGS)
+
+.PHONY: clean
+
+all: copycommon $(GOAL)
+
+$(GOAL): $(OBJECTS)
+	g++ -o $(GOAL) $(OBJECTS) $(LIBS)
+
+copycommon:
+	for i in $(COMMON); do \
+		cp -pu ../common/$$i $$i; \
+	done
+
+#HackyHack
+.c.o:
+	g++ -c $(CFLAGS) -I. -o $*.o $<
+
+.cc.o:
+	g++ -c $(CFLAGS) -I. -o $*.o $<
+
+clean: removefiles copycommon
+
+removefiles:
+	-rm *.o
+	-rm $(COMMON)
+	-rm popserver

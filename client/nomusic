@@ -1,0 +1,5 @@
+#! /bin/sh
+
+# Harte tour
+killall mpg123
+killall playmusic2

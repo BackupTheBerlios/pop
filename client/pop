@@ -1,0 +1,10 @@
+#! /bin/sh
+
+# Sicherstellen, daﬂ esd l‰uft
+# Warum macht allegro das nicht?
+if ! ps ax | grep " e\\sd "; then
+	esd -nobeeps -terminate &
+fi
+
+#Pop starten
+./popclient

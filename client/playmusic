@@ -1,0 +1,17 @@
+#! /bin/sh
+
+#OWNNAME=`basename $0`
+NAME2='playmusic2'
+
+if ps | grep "$NAME2"; then
+	PLAYPID=$( ps | awk "\$4 == \"$NAME2\" { print \$1; exit }")
+	echo "Killing PID: $PLAYPID"
+	kill $PLAYPID
+	# Hart:
+	killall mpg123
+fi
+
+# Neuen player starten
+$NAME2 "$1" &
+
+

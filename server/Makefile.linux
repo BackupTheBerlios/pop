@@ -1,0 +1,5 @@
+GOAL = popserver
+LIBS = 
+ADDCFLAGS =
+
+include Makefile.common

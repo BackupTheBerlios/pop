@@ -1,0 +1,10 @@
+GOAL = popclient
+PFAD_POP = /mnt/PlatteC/progr/pascal/pop/data/
+PFAD_USERDATA = /mnt/PlatteC/progr/pascal/pop/userdata/
+LIBS = `allegro-config --shared` -lefence -lgpc
+#LIBS = `allegro-config --shared`
+DEFS = -DLINUX -DPFAS_POP='"$(PFAD_POP)"' -DFAD_USERDATA='"$(PFAD_USERDATA)"'
+ADDCFLAGS =
+ADDPFLAFS =
+
+include Makefile.common

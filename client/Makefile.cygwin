@@ -1,0 +1,9 @@
+PFAD_POP = c:/progr/pascal/pop/data/
+GOAL = popclient.exe
+LIBS = -lmingw32 -lmsvcrt -lalleg -lgpc
+DEFS = -DCYGWIN -DPFAD_POP='"$(PFAD_POP)"'
+ADDCFLAGS = -I /usr/include/mingw
+ADDPFLAGS = 
+
+include Makefile.common
+

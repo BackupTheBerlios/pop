@@ -1,0 +1,43 @@
+# Makefile...
+
+OBJECTS = allunit.o auto.o config.o eing.o ende.o fehler.o grafik.o gvars.o \
+          leveldat.o menu.o message.o messnet.o msgnet.o netclient.o \
+          netdebug.o netmess.o parser.o pop.o sound.o tasten.o gpcutil.o \
+	  allegc.o strteile.o autos.o music.o
+
+COMMON = autos.h autos.c strteile.c messnet.c fixed.c fixed.h message.h \
+	parser.h parser.c sysconf.h strteile.h
+
+CFLAGS = -Wall -O2 -g $(DEFS) $(ADDCFLAGS)
+PASFLAGS = --automake -Wall -O2 -g $(DEFS) $(ADDPFLAGS)
+
+.PHONY: clean
+
+all: copycommon $(GOAL)
+
+$(GOAL): $(OBJECTS)
+	gcc -g -o $(GOAL) $(OBJECTS) $(LIBS)
+
+copycommon:
+	for i in $(COMMON); do \
+		cp -pu ../common/$$i $$i; \
+	done
+
+#Make kennt keine eingebaute Regel fuer Gnu Pascal...
+pop.o : pop.pas ;
+	gpc -c $(PASFLAGS) --gpc-main="_mangled_main" -I. -o $*.o $<
+
+%.o : %.pas ;
+	gpc -c $(PASFLAGS) -I. -o $*.o $<
+
+.c.o:
+	gcc -c $(CFLAGS) -I. -o $*.o $<
+
+clean: removefiles copycommon
+
+removefiles:
+	-rm *.gpi
+	-rm gpc.*
+	-rm *.o
+	-rm $(COMMON)
+	-rm $(GOAL)

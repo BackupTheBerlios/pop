@@ -1,0 +1,6 @@
+#! /bin/sh
+
+# Speilt das Stück 4 mal hintereinander, danach sollte hoffentlich ein Musik­
+# Wechsel kommen
+mpg123 -s "$1" "$1" "$1" "$1" | esdcat
+

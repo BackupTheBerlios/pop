@@ -1,0 +1,28 @@
+# Makefile...
+
+OBJECTS = auto.o client.o fixed.o level.o messnet.o server.o autos.o \
+	parser.o sched_cygwin.o strteile.o
+
+PFAD_POP = data/
+
+LIBS = 
+
+CFLAGS = -Wall -O2 -g -DCYGWIN -DPFAD_POP='"$(PFAD_POP)"'
+
+.PHONY: clean
+
+all: copycommon popserver.exe
+
+popserver.exe: $(OBJECTS)
+	g++ $(LIBS) -o popserver.exe $(OBJECTS)
+
+copycommon:
+	cp -pu ../common/strteile.c ./strteile.cc
+	cp -pu ../common/messnet.c ./messnet.cc
+
+.cc.o:
+	g++ -c $(CFLAGS) -I. -o $*.o $<
+
+clean:
+	-rm $(OBJECTS)
+	-rm popserver.exe
