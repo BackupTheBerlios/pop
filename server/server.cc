@@ -41,15 +41,13 @@ levels *ls;
 int lnum;
 level al;
 levelteile at;
-list<client> clients;
+clients clist;
 int clientnum;
 int status;
 int starttime;
 volatile unsigned int timepos;
 
 objdyn *outbuf;
-
-typedef list<client>::iterator cptr;
 
 /* forward deklaration */
 void pops_init();
@@ -88,7 +86,7 @@ void pops_exit()
 /* Message Handling */
 void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
 {
- cptr ac;
+ client *ac;
 
  if (g==G_NET) {
   // Neue Clients?
@@ -106,21 +104,14 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
   return;
  }
 
- for (cptr i=clients.begin(); i!=clients.end(); i++)
-  if (i->a == s) {
-   ac=i;
-   break;
-  }
+ ac=clist.findclient(s);
+ if (ac==NULL)	return;
 
  if (g==G_SETUP) {
   // Warten Status
   if (status==STATUS_WAIT) {
    switch (n) {
     // Anmeldung 1
-    case 50: // Bildschirm Auflösung
-     ac->setres (a1,a2);
-     cout << "Bildschirmauflösung:" << a1 << "," << a2 << "\n";
-     break;
     case 51: // Refreshrate... Kommt noch
      break;
     case 52: // Spielertyp
@@ -205,13 +196,10 @@ void pops_rcvmsg (s_client *s,int g,int n,int a1,int a2)
 
 void pops_rcvmsgs (s_client *s,int g,int n,int a1,const char *a2)
 {
- cptr ac;
+ client *ac;
 
- for (cptr i=clients.begin(); i!=clients.end(); i++)
-  if (i->a == s) {
-   ac=i;
-   break;
-  }
+ ac=clist.findclient(s);
+ if (ac==NULL) return;
 
  if (g==G_SETUP) {
   switch (n) {
@@ -263,48 +251,44 @@ void pops_stop()
 /* Clients */
 void pops_addclient (s_client *s)
 {
- client *c=new client;
+ client *c=clist.makenew(s);
 
- c->a=s;
  c->init();
-
- clients.push_back (*c);
 }
 
 void pops_delclient (s_client *s)
 {
- cptr i,a;
+ client *i;
 
- for (i=clients.begin(); i!=clients.end(); i++)
-  if (i->a == s)
-   break;
-
- if (i->a!=s) {
-  cout << "Error! Falsche Nummer bei delclient !?\n";
-  return;
+ i=clist.findclient(s);
+ if (i==NULL) {
+	cout << "Falsche Nummer bei DelClient!\n";
+	return;
  }
 
  if (i->getnum()==clientnum-1)
   clientnum--;
 
+ //Hmm, should continue instead of interrupting game
  if (status!=STATUS_WAIT) {
   cout << "Client exited - change Status\n";
   pops_statuswechsel(STATUS_WAIT);
  }
 
- if (i->ismaster()) {
+ bool wasmaster=i->ismaster();
+ clist.delclient(s);
+
+ if (wasmaster) {
   cout << "Master Client exited! Looking for new master\n";
-  for (a=clients.begin();a!=clients.end();a++) {
-   if (a!=i)
-    break;
-  }
-  if (a!=i) {
-   a->setmaster(true);
-   serv_sendmsg (sc,a->a,G_SETUP,9,1,0); // Client ist jetzt Master
+  i=clist.findclient(0);
+
+  if (i!=NULL) {
+   i->setmaster(true);
+   serv_sendmsg (sc,i->a,G_SETUP,9,1,0); // Client ist jetzt Master
+  } else {
+   cout << "No Player found... Abort!\n";
   }
  }
-
- clients.erase(i);
 }
 
 void pops_acceptclient (client &s)
@@ -316,7 +300,8 @@ void pops_acceptclient (client &s)
   serv_sendmsg (sc,s.a,G_SETUP,6, ls->getanz(),0);
  serv_sendmsgs (sc,s.a,G_SETUP,13, 0, al.name);
 
- for (cptr i=clients.begin();i!=clients.end();i++) {
+ clients::iterator i;
+ for (i=clist.begin();i!=clist.end();i++) {
   if (i->a != s.a) {
    serv_sendmsgs (sc,s.a,G_SETUP,7, i->getnum(), i->getname());
    serv_sendmsg (sc,s.a, G_SETUP,8, i->getnum(), i->getobjtyp());
@@ -392,7 +377,8 @@ void pops_calcstart()
  al.startp(ox,oy);
  int xp=ox,yp=oy;
 
- for (cptr i=clients.begin();i!=clients.end();i++) {
+ clients::iterator i;
+ for (i=clist.begin();i!=clist.end();i++) {
   i->obj->setpos (xp,yp);
   i->obj->setrot (0);
   // Nächste Reihe?
@@ -403,25 +389,26 @@ void pops_calcstart()
   }
  }
 
- starttime=666;
+ starttime=10*FPS;
  cout << "OK!\n";
 }
 
 void pops_setoknull()
 {
- for (cptr i=clients.begin();i!=clients.end();i++)
+ clients::iterator i;
+ for (i=clist.begin();i!=clist.end();i++)
   i->setok(false);
 }
 
 void pops_checkaende()
 {
- cptr i;
+ clients::iterator i;
 
- for (i=clients.begin();i!=clients.end();i++)
+ for (i=clist.begin();i!=clist.end();i++)
   if (!i->isok())
    break;
 
- if (i!=clients.end())
+ if (i!=clist.end())
   return;
 
  pops_statuswechsel(STATUS_LOAD);
@@ -429,13 +416,13 @@ void pops_checkaende()
 
 void pops_checklende()
 {
- cptr i;
+ clients::iterator i;
 
- for (i=clients.begin();i!=clients.end();i++)
+ for (i=clist.begin();i!=clist.end();i++)
   if (!i->isok())
    break;
 
- if (i!=clients.end())
+ if (i!=clist.end())
   return;
 
  pops_statuswechsel(STATUS_RUN);
@@ -445,10 +432,10 @@ void pops_calculate()
 {
  // Noch beim Start?
  if (starttime>=0) {
-	if (starttime==666) {
+	if (starttime==10*FPS) {
 		cout << "Starttime 2\n";
 		serv_sendmsgs_all(sc,G_SETUP,20,11,"");
-	} else if (starttime==333) {
+	} else if (starttime==5*FPS) {
 		serv_sendmsgs_all(sc,G_SETUP,20,12,"");
 		cout << "Starttime 1\n";
 	} else if (starttime==0) {
@@ -458,13 +445,14 @@ void pops_calculate()
 	starttime--;
  }
 
- for (cptr i=clients.begin();i!=clients.end();i++)
-  i->calc();
+ clist.calc();
 }
 
 void pops_calcl()
 {
- for (cptr i=clients.begin();i!=clients.end();i++)
+ clients::iterator i;
+
+ for (i=clist.begin();i!=clist.end();i++)
   i->lcalc();
 }
 
@@ -472,11 +460,12 @@ void pops_send()
 {
  objdyn *tbuf=outbuf;
 
- for (cptr i=clients.begin();i!=clients.end();i++) {
+ clients::iterator i;
+ for (i=clist.begin();i!=clist.end();i++) {
   i->send(tbuf);
   tbuf++;
  }
- serv_sendmsgd_all (sc,G_PHYSIK,0,(void*)outbuf,sizeof(objdyn)*clients.size());
+ serv_sendmsgd_all (sc,G_PHYSIK,0,(void*)outbuf,sizeof(objdyn)*clist.size());
 }
 
 void pops_calcnet()
@@ -486,7 +475,7 @@ void pops_calcnet()
 
 void pops_allocoutbuf()
 {
- outbuf=new objdyn[clients.size()];
+ outbuf=new objdyn[clist.size()];
 }
 
 void pops_freeoutbuf()

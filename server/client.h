@@ -18,9 +18,13 @@
 #ifndef __CLIENT_H__
 #define __CLIENT_H__
 
+#include <vector>
+
 #include "message.h"
 #include "level.h"
 #include "auto.h"
+#include "gameobj.h"
+#include "net.h"
 
 #define CSTATUS_ANMELDUNG1 0
 #define CSTATUS_ANMELDUNG2 1
@@ -30,64 +34,33 @@
 #define CSTATUS_PAUSE	   5
 #define CSTATUS_ERGEBNIS   6
 
-typedef struct {
-  unsigned short xp,yp;
-  fix richtung;
-} objdyn;
-
 class client;
 
-class game_objekt
-{
- public:
-  objdyn dyn;
-  client *cl;
-
-      game_objekt(client *c);
-  int xp();
-  int yp();
-  virtual void calc();
-  virtual void contr(int num,int a);
-  virtual void setpos(unsigned short x,unsigned short y);
-  virtual void setrot(fix r);
-  void sendmsg(int num,const char *msg);
-  // FixME: Buffer overflows
-  virtual void getstatus(char *msg);
-};
-
-class zuschauer : public game_objekt
-{
- public:
-  float fx,fy;
-
-       zuschauer(client *c);
-  void calc();
-  void contr(int num,int a);
-};
-
-class spieler : public game_objekt
+class clients
 {
 public:
-  autodaten *car;
-  float f,v;
-  float px,py,richtung;
-  float nx,ny;
-  float drehung;
-  int acp;
-  int round;
-  int fertig;
+	// Add/Del Client
+	client *makenew(s_client *adr);
+	void delclient (s_client *adr);
 
-       spieler(client *c);
-  void setcar(int num);
+	// Iterator
+	typedef vector<client>::iterator iterator;
 
-  void calc();
-  void contr(int num,int a);
-  virtual void setpos(unsigned short x,unsigned short y);
-  virtual void setrot(fix r);
-  void getstatus(char *msg);
-  void inline calcmove();
-  void inline checkstoss();
+	// Find Client funcs
+	client *findclient(s_client *adr);
+	client *findclient(int i);
+	iterator begin()	{ return clist.begin(); }
+	iterator end()	{ return clist.end(); }
+
+	// Algemein
+	void calc();
+	int size();
+	
+protected:
+	vector<client> clist;
 };
+
+class game_objekt;
 
 class client
 {
@@ -103,14 +76,13 @@ class client
 
   void selectcar(int num);
   void contr(int num,int a) { obj->contr(num,a); }
-  void calc() { obj->calc(); }
+  void calc1() { obj->calcpos(); }
   void lcalc();
   void send(objdyn *datao);
   void setname(const char *n);
   const char *getname();
   void setnum(int n);
   int getnum();
-  void setres(int xr,int yr);
   int getobjtyp();
   void setmaster(bool m);
   bool ismaster();
@@ -123,7 +95,6 @@ class client
 
  private:
   int num;
-  int resx,resy;
   char name[255];
   int cstatus;
   int stat2;
@@ -131,8 +102,5 @@ class client
   bool master;
   bool ok;
 };
-
-// globale Vars
-extern level al;
 
 #endif

@@ -1,6 +1,6 @@
 # Makefile common for POp Server
 OBJECTS = auto.o client.o fixed.o level.o messnet.o server.o autos.o \
-	parser.o strteile.o $(ADDOBJECTS)
+	parser.o strteile.o gameobj.o $(ADDOBJECTS)
 
 COMMON = autos.h autos.c strteile.c messnet.c fixed.c fixed.h message.h \
 	parser.h parser.c sysconf.h strteile.h
