@@ -80,7 +80,7 @@ begin
      menu_run;
      sound_run;
      msgnet_run;
-     SleepMicroSeconds(50);
+     SleepMicroSeconds(50000);
     end;
 
     if status<>STATUS_WAIT then begin
@@ -104,7 +104,7 @@ begin
      netclient_run;
      msgnet_run;
      {Wir sind lieb zum OS :-) }
-     SleepMicroSeconds(50);
+     SleepMicroSeconds(50000);
     end;
 
     if status<>STATUS_NO_CONNECT then begin

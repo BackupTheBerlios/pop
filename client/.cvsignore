@@ -1,3 +1,8 @@
 *.gpi
 Makefile
+*.swp
+*.tmp
+*.kdbgrc*
+*.gpm
+popclient
 
