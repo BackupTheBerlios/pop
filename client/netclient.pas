@@ -248,7 +248,6 @@ begin
   cli_set_rcvmsgd (cc,@netclient_netrcvd);
 
   {Schritt 3: Allgemeine Daten senden...}
-  sendmsg (NET+SETUP,50,640,480); {Bildschirmaufl”sung}
   sendmsg (NET+SETUP,52,mytyp,0); {Typ - Mitspieler}
   sendmsg (NET+SETUP,53,0,0); {Alles gesendet}
   for erg:=1 to 10000 do begin
