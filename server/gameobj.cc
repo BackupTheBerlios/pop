@@ -95,17 +95,15 @@ float inline abs(float a)
 	return a<0 ? -a : a;
 }
 
-extern int starttime; // Hack
-
 #define vmax	7
 #define kkonst	0.8
 #define DKONST	0.2
 
-int inline spieler::checkstoss(float xp,float yp,float xn,float yn)
+void spieler::checkcp()
 {
- int s= al.stoss(xp,yp,xn,yn);
+ int s= al.stoss(px,py,nx,ny,true);
 
- // Rundenzählen
+  // Rundenzählen
  if (s>=2) {
 	if (s-2==acp) {
 		acp++;
@@ -132,8 +130,12 @@ int inline spieler::checkstoss(float xp,float yp,float xn,float yn)
 	} else {
 		cout << "Fehlerhaftes Leveldesign!!!\n";
 	}
-	return 1;
  }
+}
+
+int inline spieler::checkstoss(float xp,float yp,float xn,float yn)
+{
+ int s= al.stoss(xp,yp,xn,yn,false);
 
  // Stoss beachten?
  if (s==1) {
@@ -152,7 +154,6 @@ void inline spieler::calcpos()
  if (starttime<=0) { // Rennen schon gestartet
 
  if (fertig) {
-	cout << "Fertig!\n";
       // Alle Runden beendet => abbremsen
 	v-=0.125;
 	if (v<0) v=0;
@@ -231,6 +232,9 @@ void spieler::calccoll(const vector <game_objekt *> objs)
 		if (checkstoss(xb[i],yb[i],xn[i],yn[i]))
 			break;
 	}
+
+	// Checkpoints?
+	checkcp();
 
 	setnpos();
 }

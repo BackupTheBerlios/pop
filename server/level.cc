@@ -247,7 +247,7 @@ inline int getsitek(int xp, int yp, int rad, int t, float x, float y)
 		return -1;
 }
 
-int level::stoss(float ox,float oy,float nx,float ny)
+int level::stoss(float ox,float oy,float nx,float ny,bool cpc)
 {
  // Koordinaten des Levelteils berechnen
  int xk=((int)nx)/LEVEL_NORMTB;
@@ -269,17 +269,20 @@ int level::stoss(float ox,float oy,float nx,float ny)
    s2=getsitel(g->x1,g->y1,g->x2,g->y2,nx,ny);
    if (s1!=s2 && s1!=0 && s2!=0) {
     if (i==0 && (t->flags & 3)) {
-	//Checkpoint?
-	for (int a=0;a<6;a++) {
-		if (cpoints[a].x==xk && cpoints[a].y==yk)
-			return 2+a;
+        if (cpc) {
+	        //Checkpoint?
+	        for (int a=0;a<6;a++) {
+        		if (cpoints[a].x==xk && cpoints[a].y==yk)
+			        return 2+a;
+	        }
 	}
+    } else {
+        return 1;
     }
-    return 1;
    }
   } else {
    s1=getsitek(g->x1,g->y1,g->x2,g->typ,ox,oy);
-   s2=getsitek(g->x1,g->y1,g->x2,g->typ,nx,ny); 
+   s2=getsitek(g->x1,g->y1,g->x2,g->typ,nx,ny);
    #ifdef STOSS_DEBUG
    if (s1!=0 || s2!=0)
 	cout << g->typ << s1+1 << s2+1 << ":";

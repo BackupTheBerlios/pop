@@ -71,6 +71,7 @@ public:
   void getstatus(char *msg);
   int gettyp()	{ return TYPE_SPIELER; }
 protected:
+  void checkcp();
   void setnpos();
   int inline checkstoss(float,float,float,float);
   void getcorners(float,float,float,float[4],float[4]);

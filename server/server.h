@@ -10,5 +10,6 @@ extern serverchan *sc;
 extern volatile unsigned int timepos;
 class autotypen;
 extern autotypen *typen;
+extern int starttime;
 
 #endif

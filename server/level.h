@@ -64,7 +64,7 @@ public:
  void getdata(int anz,strtyp *buf);
 
  //Überprüfen des Levels
- int stoss(float ox,float oy,float nx,float ny);
+ int stoss(float ox,float oy,float nx,float ny,bool cpc=true);
 
  //Gibt Position des Startpunkts zurück
  void startp(int &x,int &y);
