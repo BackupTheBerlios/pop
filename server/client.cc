@@ -313,7 +313,6 @@ void inline spieler::calcmove()
  }
 
  richtung += drehung * (M_PI/180); // 5 Grad Schritte...
- float nx,ny;
  nx=px+sin(richtung)*v;
  ny=py-cos(richtung)*v;
 
@@ -321,6 +320,8 @@ void inline spieler::calcmove()
  if (nx>al.b * 640) nx=al.b*640;
  if (ny<0) ny=0;
  if (ny>al.h * 480) ny=al.h*480;
+ } else {
+  nx=px; ny=py;
  }
 }
 
