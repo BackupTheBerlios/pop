@@ -1,0 +1,122 @@
+# Beschreibungsdatei fÅr Levelteile...
+SetName "Standardset"
+
+# --- Teil 0
+Start 0
+ Name "Gruen"
+ GfxName "ls.pcx"
+ Flags 0
+End
+
+# --- Teil 1
+# Kurve: 
+#  	Kreis x,y,rad,Typ
+#  Typen:
+#	ro : 2
+#	lo : 3
+#	ru : 4
+#	lu : 5
+Start 1
+ Name "Kurve lo"
+ GfxName "k1.pcx"
+ Flags 0
+ Line 445,415,445,480
+ Line 494,365,640,365
+ Line 195,165,195,480
+ Line 245,115,640,115
+ Kreis 494,415,50,3
+ Kreis 245,165,50,3
+End
+
+Start 2
+ Name "Kurve ro"
+ GfxName "k2.pcx"
+ Flags 0
+ Line 195,415,195,480
+ Line 0,365,146,365
+ Line 445,165,445,480
+ Line 0,115,395,115
+ Kreis 146,415,50,2
+ Kreis 395,165,50,2
+End
+
+Start 3
+ Name "Kurve ur"
+ GfxName "k3.pcx"
+ Flags 0
+ Line 0,115,146,115
+ Line 195,0,195,65
+ Line 0,365,395,365
+ Line 445,0,445,475
+ Kreis 146,65,50,4
+ Kreis 395,475,50,4
+End
+
+Start 4
+ Name "Kurve ul"
+ GfxName "k4.pcx"
+ Flags 0
+ Line 195,0,195,315
+ Line 245,365,640,365
+ Line 445,0,445,65
+ Line 494,115,640,115
+ Kreis 245,315,50,5
+ Kreis 494,65,50,5
+End
+
+Start 5
+ Name "Gerade lr"
+ GfxName "g1.pcx"
+ Flags 0
+ Line 0,115,640,115
+ Line 0,365,640,365
+End
+
+Start 6
+ Name "Gerade uo"
+ GfxName "g2.pcx"
+ Flags 0
+ Line 195,0,195,480
+ Line 444,0,444,480
+End
+
+Start 7
+ Name "Start"
+ GfxName "start.pcx"
+ Flags 1
+ #Diese Linie ist Checkpoint
+ Line 0,430,640,430
+
+ Line 195,0,195,480
+ Line 444,0,444,480
+End
+
+Start 8
+ Name "Kreistest"
+ GfxName "ktest.pcx"
+ Flags 0
+ Kreis 320,200,75,2
+ Kreis 320,200,75,3
+ Kreis 320,200,75,4
+ Kreis 320,200,75,5
+End
+
+Start 9
+ Name "Checkpoint"
+ GfxName "cp.pcx"
+ Flags 2
+# Diese Linie ist der Checkpoint
+ Line 0,200,640,200
+
+ Line 195,0,195,480
+ Line 444,0,444,480
+End
+
+Start 10
+ Name "Start2"
+ GfxName "start2.pcx"
+ Flags 0
+ Line 195,0,195,480
+ Line 444,0,444,480
+End
+
